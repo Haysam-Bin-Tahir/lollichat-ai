@@ -30,6 +30,8 @@ export function ModelSelector({
     [optimisticModelId],
   );
 
+  return null;
+
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger
