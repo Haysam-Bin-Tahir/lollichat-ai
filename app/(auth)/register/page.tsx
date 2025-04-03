@@ -2,26 +2,20 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useActionState, useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
+import { signIn } from 'next-auth/react';
 
 import { AuthForm } from '@/components/auth-form';
 import { SubmitButton } from '@/components/submit-button';
-
-import { register, type RegisterActionState } from '../actions';
 import { toast } from '@/components/toast';
+import { register, type RegisterActionState } from '../actions';
 
-export default function Page() {
+function RegisterForm() {
   const router = useRouter();
-
   const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccessful, setIsSuccessful] = useState(false);
-
-  const [state, formAction] = useActionState<RegisterActionState, FormData>(
-    register,
-    {
-      status: 'idle',
-    },
-  );
+  const [state, setState] = useState<RegisterActionState>({ status: 'idle' });
 
   useEffect(() => {
     if (state.status === 'user_exists') {
@@ -35,17 +29,62 @@ export default function Page() {
       });
     } else if (state.status === 'success') {
       toast({ type: 'success', description: 'Account created successfully!' });
-
       setIsSuccessful(true);
       router.refresh();
+      router.push('/');
     }
-  }, [state]);
+  }, [state, router]);
 
-  const handleSubmit = (formData: FormData) => {
+  const handleSubmit = async (formData: FormData) => {
+    setIsSubmitting(true);
     setEmail(formData.get('email') as string);
-    formAction(formData);
+    
+    try {
+      const response = await register(state, formData);
+      setState(response);
+    } catch (error) {
+      console.error('Registration error:', error);
+      toast({
+        type: 'error',
+        description: 'An unexpected error occurred.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
+  return (
+    <AuthForm action={handleSubmit} defaultEmail={email}>
+      <SubmitButton isSuccessful={isSuccessful} disabled={isSubmitting}>
+        {isSubmitting ? 'Creating account...' : 'Sign Up'}
+      </SubmitButton>
+      <p className="text-center text-sm text-gray-600 mt-4 dark:text-zinc-400">
+        {'Already have an account? '}
+        <Link
+          href="/login"
+          className="font-semibold text-gray-800 hover:underline dark:text-zinc-200"
+        >
+          Sign in
+        </Link>
+        {' instead.'}
+      </p>
+    </AuthForm>
+  );
+}
+
+// Loading fallback component
+function RegisterFormSkeleton() {
+  return (
+    <div className="animate-pulse">
+      <div className="h-10 bg-gray-200 rounded dark:bg-zinc-700 mb-4"></div>
+      <div className="h-10 bg-gray-200 rounded dark:bg-zinc-700 mb-6"></div>
+      <div className="h-10 bg-gray-200 rounded dark:bg-zinc-700 mb-4"></div>
+      <div className="h-4 bg-gray-200 rounded dark:bg-zinc-700 w-3/4 mx-auto"></div>
+    </div>
+  );
+}
+
+export default function Page() {
   return (
     <div className="flex h-dvh w-screen items-start pt-12 md:pt-0 md:items-center justify-center bg-background">
       <div className="w-full max-w-md overflow-hidden rounded-2xl gap-12 flex flex-col">
@@ -55,19 +94,9 @@ export default function Page() {
             Create an account with your email and password
           </p>
         </div>
-        <AuthForm action={handleSubmit} defaultEmail={email}>
-          <SubmitButton isSuccessful={isSuccessful}>Sign Up</SubmitButton>
-          <p className="text-center text-sm text-gray-600 mt-4 dark:text-zinc-400">
-            {'Already have an account? '}
-            <Link
-              href="/login"
-              className="font-semibold text-gray-800 hover:underline dark:text-zinc-200"
-            >
-              Sign in
-            </Link>
-            {' instead.'}
-          </p>
-        </AuthForm>
+        <Suspense fallback={<RegisterFormSkeleton />}>
+          <RegisterForm />
+        </Suspense>
       </div>
     </div>
   );
