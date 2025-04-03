@@ -11,10 +11,21 @@ import {
   boolean,
 } from 'drizzle-orm/pg-core';
 
+// export const user = pgTable('User', {
+//   id: uuid('id').primaryKey().notNull().defaultRandom(),
+//   email: varchar('email', { length: 64 }).notNull(),
+//   password: varchar('password', { length: 64 }),
+// });
+
+// export type User = InferSelectModel<typeof user>;
+
 export const user = pgTable('User', {
   id: uuid('id').primaryKey().notNull().defaultRandom(),
   email: varchar('email', { length: 64 }).notNull(),
-  password: varchar('password', { length: 64 }),
+  password: varchar('password', { length: 64 }), // Now optional for OAuth users
+  name: text('name'), // Added for user's display name from Google
+  image: text('image'), // Added for user's profile image from Google
+  provider: varchar('provider', { length: 20 }).default('credentials'), // Track auth provider
 });
 
 export type User = InferSelectModel<typeof user>;

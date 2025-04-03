@@ -35,14 +35,49 @@ export async function getUser(email: string): Promise<Array<User>> {
   }
 }
 
-export async function createUser(email: string, password: string) {
-  const salt = genSaltSync(10);
-  const hash = hashSync(password, salt);
-
+export async function createUser(
+  email: string, 
+  password: string | null, 
+  name?: string, 
+  image?: string, 
+  provider: string = 'credentials'
+) {
   try {
-    return await db.insert(user).values({ email, password: hash });
+    console.log(`Creating user with email: ${email}, provider: ${provider}`);
+    
+    // For standard email/password authentication
+    if (provider === 'credentials' && password) {
+      const salt = genSaltSync(10);
+      const hash = hashSync(password, salt);
+      
+      return await db.insert(user).values({ 
+        email, 
+        password: hash,
+        provider 
+      });
+    }
+    
+    // For OAuth providers (Google, etc.)
+    const result = await db.insert(user).values({ 
+      email, 
+      name,
+      image,
+      provider 
+    }).returning({ id: user.id });
+    
+    console.log('User created successfully:', result);
+    return result;
   } catch (error) {
-    console.error('Failed to create user in database');
+    console.error('Failed to create user in database:', error);
+    throw error;
+  }
+}
+export async function getUserByEmail(email: string): Promise<User | undefined> {
+  try {
+    const users = await db.select().from(user).where(eq(user.email, email));
+    return users[0];
+  } catch (error) {
+    console.error('Failed to get user by email from database');
     throw error;
   }
 }
