@@ -17,6 +17,13 @@ import {
 } from '@/components/ui/sidebar';
 import Link from 'next/link';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
+import { cn } from '@/lib/utils';
+import { LucideProps } from 'lucide-react';
+import { SparklesIcon as LucideSparkles } from 'lucide-react';
+
+const SparklesIcon = ({ className, ...props }: LucideProps) => {
+  return <LucideSparkles className={cn(className)} {...props} />;
+};
 
 export function AppSidebar({ user }: { user: User | undefined }) {
   const router = useRouter();
@@ -34,7 +41,12 @@ export function AppSidebar({ user }: { user: User | undefined }) {
               }}
               className="flex flex-row gap-3 items-center"
             >
-              <span className="text-lg font-semibold px-2 hover:bg-muted rounded-md cursor-pointer">
+                <SparklesIcon
+                  size={24}
+                  fill="currentColor"
+                  className="text-primary group-hover:scale-110 transition-transform duration-200"
+                />
+              <span className="winky-sans-bold text-3xl tracking-tight bg-gradient-to-r from-indigo-600 to-indigo-500 bg-clip-text text-transparent dark:from-indigo-400 dark:to-indigo-300">
                 Lollichat
               </span>
             </Link>
