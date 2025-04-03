@@ -65,7 +65,7 @@ const PurePreviewMessage = ({
             </div>
           )}
 
-          <div className="flex flex-col gap-4 w-full">
+          <div className="flex flex-col gap-4 w-full winky-sans-regular text-[22px]">
             {message.experimental_attachments && (
               <div
                 data-testid={`message-attachments`}
