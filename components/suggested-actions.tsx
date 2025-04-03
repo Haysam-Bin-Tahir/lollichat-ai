@@ -25,7 +25,7 @@ function PureSuggestedActions({ chatId, append }: SuggestedActionsProps) {
     {
       title: "Help me write",
       label: "about democracy",
-      action: "Help me write an essay about democracy, its core principles, and its importance in modern society.",
+      action: "Help me write an essay about democracy, its core principles, and its importance in modern society. Provide a summary of what you wrote.",
     },
     {
       title: "I'd love to learn",
