@@ -2,7 +2,7 @@ import { Toaster } from 'sonner';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
-
+import { AuthProvider } from '@/components/auth-provider';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -73,15 +73,17 @@ export default async function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Winky+Sans:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet" />
       </head>
       <body className="antialiased">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
+        <AuthProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
         >
           <Toaster position="top-center" />
           {children}
         </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );

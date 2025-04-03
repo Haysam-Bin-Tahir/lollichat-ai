@@ -1,48 +1,67 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useActionState, useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { signIn } from 'next-auth/react';
 import { toast } from '@/components/toast';
 
 import { AuthForm } from '@/components/auth-form';
 import { SubmitButton } from '@/components/submit-button';
 
-import { login, type LoginActionState } from '../actions';
-
 export default function Page() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || '/';
+  const error = searchParams.get('error');
 
   const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccessful, setIsSuccessful] = useState(false);
 
-  const [state, formAction] = useActionState<LoginActionState, FormData>(
-    login,
-    {
-      status: 'idle',
-    },
-  );
-
   useEffect(() => {
-    if (state.status === 'failed') {
+    if (error) {
       toast({
         type: 'error',
-        description: 'Invalid credentials!',
+        description: 'Login failed. Please check your credentials.',
       });
-    } else if (state.status === 'invalid_data') {
-      toast({
-        type: 'error',
-        description: 'Failed validating your submission!',
-      });
-    } else if (state.status === 'success') {
-      setIsSuccessful(true);
-      router.refresh();
     }
-  }, [state.status]);
+  }, [error]);
 
-  const handleSubmit = (formData: FormData) => {
-    setEmail(formData.get('email') as string);
-    formAction(formData);
+  const handleSubmit = async (formData: FormData) => {
+    setIsSubmitting(true);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+    
+    setEmail(email);
+    
+    try {
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+        callbackUrl,
+      });
+
+      if (result?.error) {
+        toast({
+          type: 'error',
+          description: 'Invalid credentials!',
+        });
+        setIsSubmitting(false);
+      } else {
+        setIsSuccessful(true);
+        router.push(callbackUrl);
+        router.refresh();
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      toast({
+        type: 'error',
+        description: 'An error occurred during login.',
+      });
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -55,7 +74,9 @@ export default function Page() {
           </p>
         </div>
         <AuthForm action={handleSubmit} defaultEmail={email}>
-          <SubmitButton isSuccessful={isSuccessful}>Sign in</SubmitButton>
+          <SubmitButton isSuccessful={isSuccessful} disabled={isSubmitting}>
+            {isSubmitting ? 'Signing in...' : 'Sign in'}
+          </SubmitButton>
           <p className="text-center text-sm text-gray-600 mt-4 dark:text-zinc-400">
             {"Don't have an account? "}
             <Link
