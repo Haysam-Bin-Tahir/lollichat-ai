@@ -43,6 +43,8 @@ export async function createUser(
   provider: string = 'credentials'
 ) {
   try {
+    console.log(`Creating user with email: ${email}, provider: ${provider}`);
+    
     // For standard email/password authentication
     if (provider === 'credentials' && password) {
       const salt = genSaltSync(10);
@@ -56,18 +58,20 @@ export async function createUser(
     }
     
     // For OAuth providers (Google, etc.)
-    return await db.insert(user).values({ 
+    const result = await db.insert(user).values({ 
       email, 
       name,
       image,
       provider 
-    });
+    }).returning({ id: user.id });
+    
+    console.log('User created successfully:', result);
+    return result;
   } catch (error) {
-    console.error('Failed to create user in database');
+    console.error('Failed to create user in database:', error);
     throw error;
   }
 }
-
 export async function getUserByEmail(email: string): Promise<User | undefined> {
   try {
     const users = await db.select().from(user).where(eq(user.email, email));
