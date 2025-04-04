@@ -7,8 +7,9 @@ import './globals.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://chat.vercel.ai'),
-  title: 'Next.js Chatbot Template',
-  description: 'Next.js chatbot template using the AI SDK.',
+  title: 'Lollichat - Your AI companion',
+  description:
+    'Lollichat is your AI companion, here to chat about anything and everything.',
 };
 
 export const viewport = {
@@ -69,8 +70,15 @@ export default async function RootLayout({
           }}
         />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Winky+Sans:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Winky+Sans:ital,wght@0,300..900;1,300..900&display=swap"
+          rel="stylesheet"
+        />
       </head>
       <body className="antialiased">
         <AuthProvider>
@@ -79,10 +87,10 @@ export default async function RootLayout({
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange
-        >
-          <Toaster position="top-center" />
-          {children}
-        </ThemeProvider>
+          >
+            <Toaster position="top-center" />
+            {children}
+          </ThemeProvider>
         </AuthProvider>
       </body>
     </html>
