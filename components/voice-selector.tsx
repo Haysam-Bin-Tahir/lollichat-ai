@@ -118,9 +118,20 @@ export function VoiceSelector({
               if (option.id === 'off') {
                 stop();
                 setSelectedVoice(null);
-              } else if (option.id === 'on' && selectedVoice) {
-                // Re-select the current voice when turning on
-                setSelectedVoice(selectedVoice);
+              } else if (option.id === 'on') {
+                stop();
+                // If we have a selected voice, use it
+                if (selectedVoice) {
+                  setSelectedVoice(selectedVoice);
+                }
+                // Otherwise try to find a suitable voice from available voices
+                else if (voices.length > 0) {
+                  const voice = voices.find(
+                    (v) =>
+                      v.lang.startsWith('en-US') || v.lang.startsWith('en-GB'),
+                  );
+                  if (voice) setSelectedVoice(voice);
+                }
               } else {
                 stop();
                 const voice = voices.find((v) => v.name === option.id);
