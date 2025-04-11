@@ -110,12 +110,15 @@ const PurePreviewMessage = ({
                     const topic =
                       customRoles[topicCode as keyof typeof customRoles]
                         ?.topic || '';
+                    const img =
+                      customRoles[topicCode as keyof typeof customRoles]?.img ||
+                      '';
                     return (
-                      <div className="w-full min-w-[500px] max-w-2xl mx-auto overflow-hidden bg-white dark:bg-zinc-900 rounded-xl shadow-xl transform transition-all hover:scale-[1.02] border border-indigo-100 dark:border-indigo-900/30">
-                        <div className="relative h-48 overflow-hidden">
+                      <div className="w-full min-w-[500px] max-w-xl mx-auto overflow-hidden bg-white dark:bg-zinc-900 rounded-xl shadow-xl transform transition-all hover:scale-[1.02] border border-indigo-100 dark:border-indigo-900/30">
+                        <div className="relative h-64 overflow-hidden">
                           <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 opacity-90" />
                           <img
-                            src="https://pi.ai/_next/image?url=https%3A%2F%2Fpi.ai%2Fpublic%2Fmedia%2Fdiscover%2Fimages%2Flightning.webp&w=3840&q=100"
+                            src={`/images/topics/${img}`}
                             alt="Gradient Background"
                             className="absolute inset-0 w-full h-full object-cover"
                           />
