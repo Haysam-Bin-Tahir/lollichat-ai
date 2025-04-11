@@ -23,6 +23,7 @@ import { LucideProps } from 'lucide-react';
 import { SparklesIcon as LucideSparkles } from 'lucide-react';
 import { customRoles } from '@/lib/topics/custom-roles';
 import Image from 'next/image';
+import { useTextToSpeech } from '@/hooks/use-text-to-speech';
 
 const SparklesIcon = ({ className, ...props }: LucideProps) => {
   return <LucideSparkles className={cn(className)} {...props} />;
@@ -47,6 +48,10 @@ const PurePreviewMessage = ({
 }) => {
   const [mode, setMode] = useState<'view' | 'edit'>('view');
   const messageRef = useRef<string>('');
+  const lastLengthRef = useRef<number>(0);
+  const pendingTextRef = useRef<string>('');
+  const speakingRef = useRef<boolean>(false);
+  const { speak, selectedVoice } = useTextToSpeech();
 
   const getMessageText = useCallback((message: UIMessage) => {
     return message.parts
@@ -55,15 +60,65 @@ const PurePreviewMessage = ({
       .join(' ');
   }, []);
 
+  const speakNextSentence = useCallback(() => {
+    if (!pendingTextRef.current || speakingRef.current) return;
+
+    const match = pendingTextRef.current.match(/^[^.!?]+[.!?]+/);
+    if (match) {
+      speakingRef.current = true;
+      const sentence = match[0];
+      pendingTextRef.current = pendingTextRef.current
+        .slice(sentence.length)
+        .trim();
+
+      speak(sentence, false, () => {
+        speakingRef.current = false;
+        speakNextSentence();
+      });
+    }
+  }, [speak]);
+
   // Auto-play effect for new messages
   useEffect(() => {
-    if (message.role === 'assistant' && !isLoading) {
+    if (message.role === 'assistant' && selectedVoice) {
       const text = getMessageText(message);
-      if (text !== messageRef.current) {
-        messageRef.current = text;
+      const isGoogleVoice = selectedVoice.name.startsWith('Google');
+
+      if (isGoogleVoice && !isLoading) {
+        // For Google voices, wait for complete message
+        if (text !== messageRef.current) {
+          messageRef.current = text;
+          speak(text);
+        }
+      } else if (!isGoogleVoice) {
+        // For local voices, queue new text as it arrives
+        const currentLength = text.length;
+        if (currentLength > lastLengthRef.current) {
+          const newText = text.slice(lastLengthRef.current);
+          pendingTextRef.current += newText;
+          lastLengthRef.current = currentLength;
+
+          // Try to speak next sentence if not already speaking
+          speakNextSentence();
+        }
       }
     }
-  }, [message, isLoading, getMessageText]);
+  }, [
+    message,
+    isLoading,
+    speak,
+    getMessageText,
+    selectedVoice,
+    speakNextSentence,
+  ]);
+
+  // Reset refs when message changes
+  useEffect(() => {
+    messageRef.current = '';
+    lastLengthRef.current = 0;
+    pendingTextRef.current = '';
+    speakingRef.current = false;
+  }, [message.id]);
 
   return (
     <AnimatePresence>

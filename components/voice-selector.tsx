@@ -24,25 +24,17 @@ export function VoiceSelector({
   className,
 }: React.ComponentProps<typeof Button>) {
   const [open, setOpen] = useState(false);
-  const { voices, selectedVoice, setSelectedVoice } = useTextToSpeech();
+  const { voices, selectedVoice, setSelectedVoice, stop } = useTextToSpeech();
 
   const voiceOptions = useMemo(() => {
     // Filter for specific voices
-    const allowedVoices = [
-      'Samantha',
-      'Aaron',
-      'Arthur',
-      'Daniel',
-      'Google US English',
-      'Google UK English Female',
-      'Google UK English Male',
-    ];
+    const allowedVoices = ['Samantha', 'Aaron', 'Arthur', 'Daniel'];
 
-    // Map of original names to display names
+    // Map of original names to display names (keeping for future use)
     const displayNames: Record<string, string> = {
-      'Google US English': 'US Female (Pro)',
-      'Google UK English Female': 'UK Female (Pro)',
-      'Google UK English Male': 'UK Male (Pro)',
+      // 'Google US English': 'US Female (Pro)',
+      // 'Google UK English Female': 'UK Female (Pro)',
+      // 'Google UK English Male': 'UK Male (Pro)',
     };
 
     // Filter and deduplicate voices
@@ -55,7 +47,7 @@ export function VoiceSelector({
               (voice.lang.startsWith('en-US') ||
                 voice.lang.startsWith('en-GB')),
           )
-          .map((voice) => [voice.name, voice]), // Use name as key for deduplication
+          .map((voice) => [voice.name, voice]),
       ).values(),
     );
 
@@ -109,6 +101,7 @@ export function VoiceSelector({
             key={option.id}
             onSelect={() => {
               if (option.id === 'off') {
+                stop();
                 setSelectedVoice(null);
               } else {
                 const voice = voices.find((v) => v.name === option.id);

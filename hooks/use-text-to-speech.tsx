@@ -22,7 +22,7 @@ const emojiRegex =
   /[\u{1F300}-\u{1F9FF}\u{2700}-\u{27BF}\u{1F000}-\u{1F02F}\u{1F0A0}-\u{1F0FF}\u{1F100}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{2600}-\u{26FF}\u{2B00}-\u{2BFF}]/gu;
 
 interface TextToSpeechContextType {
-  speak: (text: string, force?: boolean) => void;
+  speak: (text: string, force?: boolean, onEnd?: () => void) => void;
   stop: () => void;
   isPlaying: boolean;
   voices: SpeechSynthesisVoice[];
@@ -86,7 +86,7 @@ export function TextToSpeechProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const speak = useCallback(
-    (text: string, force = false) => {
+    (text: string, force = false, onEnd?: () => void) => {
       if (
         !selectedVoice ||
         !text ||
@@ -140,8 +140,14 @@ export function TextToSpeechProvider({ children }: { children: ReactNode }) {
             utterance.onstart = () => setIsPlaying(true);
           }
           if (index === chunks.length - 1) {
-            utterance.onend = () => setIsPlaying(false);
-            utterance.onerror = () => setIsPlaying(false);
+            utterance.onend = () => {
+              setIsPlaying(false);
+              onEnd?.();
+            };
+            utterance.onerror = () => {
+              setIsPlaying(false);
+              onEnd?.();
+            };
           }
 
           window.speechSynthesis.speak(utterance);
@@ -159,8 +165,14 @@ export function TextToSpeechProvider({ children }: { children: ReactNode }) {
         utterance.volume = 1;
 
         utterance.onstart = () => setIsPlaying(true);
-        utterance.onend = () => setIsPlaying(false);
-        utterance.onerror = () => setIsPlaying(false);
+        utterance.onend = () => {
+          setIsPlaying(false);
+          onEnd?.();
+        };
+        utterance.onerror = () => {
+          setIsPlaying(false);
+          onEnd?.();
+        };
 
         window.speechSynthesis.speak(utterance);
       }
