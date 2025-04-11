@@ -22,10 +22,8 @@ function LoginForm() {
       ? new URLSearchParams(window.location.search)
       : new URLSearchParams();
 
-  console.log(searchParams.get('callbackUrl'), window.location.origin, 'urls');
-
   const callbackUrl: string =
-    searchParams.get('callbackUrl') === `${window.location.origin}/`
+    searchParams.get('callbackUrl') === 'https://lollichat-ai.vercel.app/'
       ? '/topics'
       : !searchParams.get('callbackUrl')
         ? '/topics'
