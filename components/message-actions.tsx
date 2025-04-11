@@ -1,6 +1,7 @@
 import type { Message } from 'ai';
 import { useSWRConfig } from 'swr';
 import { useCopyToClipboard } from 'usehooks-ts';
+import { useCallback } from 'react';
 
 import type { Vote } from '@/lib/db/schema';
 

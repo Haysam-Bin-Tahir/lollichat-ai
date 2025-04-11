@@ -23,8 +23,6 @@ import { LucideProps } from 'lucide-react';
 import { SparklesIcon as LucideSparkles } from 'lucide-react';
 import { customRoles } from '@/lib/topics/custom-roles';
 import Image from 'next/image';
-import { VolumeIcon, VolumeXIcon } from 'lucide-react';
-import { useTextToSpeech } from '@/hooks/use-text-to-speech';
 
 const SparklesIcon = ({ className, ...props }: LucideProps) => {
   return <LucideSparkles className={cn(className)} {...props} />;
@@ -48,7 +46,6 @@ const PurePreviewMessage = ({
   isReadonly: boolean;
 }) => {
   const [mode, setMode] = useState<'view' | 'edit'>('view');
-  const { speak, stop, isPlaying } = useTextToSpeech();
   const messageRef = useRef<string>('');
 
   const getMessageText = useCallback((message: UIMessage) => {
@@ -64,10 +61,9 @@ const PurePreviewMessage = ({
       const text = getMessageText(message);
       if (text !== messageRef.current) {
         messageRef.current = text;
-        speak(text);
       }
     }
-  }, [message, isLoading, speak, getMessageText]);
+  }, [message, isLoading, getMessageText]);
 
   return (
     <AnimatePresence>
@@ -284,32 +280,13 @@ const PurePreviewMessage = ({
               }
             })}
 
-            {!isReadonly && (
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() =>
-                    isPlaying ? stop() : speak(getMessageText(message))
-                  }
-                  className="opacity-0 group-hover/message:opacity-100 transition-opacity"
-                >
-                  {isPlaying ? (
-                    <VolumeXIcon className="h-4 w-4" />
-                  ) : (
-                    <VolumeIcon className="h-4 w-4" />
-                  )}
-                </Button>
-
-                <MessageActions
-                  key={`action-${message.id}`}
-                  chatId={chatId}
-                  message={message}
-                  vote={vote}
-                  isLoading={isLoading}
-                />
-              </div>
-            )}
+            <MessageActions
+              key={`action-${message.id}`}
+              chatId={chatId}
+              message={message}
+              vote={vote}
+              isLoading={isLoading}
+            />
           </div>
         </div>
       </motion.div>
