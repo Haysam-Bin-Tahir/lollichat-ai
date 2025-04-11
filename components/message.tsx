@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { memo, useState } from 'react';
 import type { Vote } from '@/lib/db/schema';
 import { DocumentToolCall, DocumentToolResult } from './document';
-import { PencilEditIcon, SparklesIcon } from './icons';
+import { PencilEditIcon } from './icons';
 import { Markdown } from './markdown';
 import { MessageActions } from './message-actions';
 import { PreviewAttachment } from './preview-attachment';
@@ -19,6 +19,13 @@ import { MessageEditor } from './message-editor';
 import { DocumentPreview } from './document-preview';
 import { MessageReasoning } from './message-reasoning';
 import { UseChatHelpers } from '@ai-sdk/react';
+import { LucideProps } from 'lucide-react';
+import { SparklesIcon as LucideSparkles } from 'lucide-react';
+import { customRoles } from '@/lib/topics/custom-roles';
+
+const SparklesIcon = ({ className, ...props }: LucideProps) => {
+  return <LucideSparkles className={cn(className)} {...props} />;
+};
 
 const PurePreviewMessage = ({
   chatId,
@@ -96,6 +103,36 @@ const PurePreviewMessage = ({
 
               if (type === 'text') {
                 if (mode === 'view') {
+                  if (part.text?.includes('lollichat-custom-role-assumption')) {
+                    const topicCode = part.text
+                      .split('lollichat-custom-role-assumption:')[1]
+                      ?.split('|')[0];
+                    const topic =
+                      customRoles[topicCode as keyof typeof customRoles]
+                        ?.topic || '';
+                    return (
+                      <div className="w-full min-w-[500px] max-w-2xl mx-auto overflow-hidden bg-white dark:bg-zinc-900 rounded-xl shadow-xl transform transition-all hover:scale-[1.02] border border-indigo-100 dark:border-indigo-900/30">
+                        <div className="relative h-48 overflow-hidden">
+                          <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 opacity-90" />
+                          <img
+                            src="https://pi.ai/_next/image?url=https%3A%2F%2Fpi.ai%2Fpublic%2Fmedia%2Fdiscover%2Fimages%2Flightning.webp&w=3840&q=100"
+                            alt="Gradient Background"
+                            className="absolute inset-0 w-full h-full object-cover"
+                          />
+                          <SparklesIcon
+                            className="absolute top-1 left-1 text-white/80"
+                            size={40}
+                          />
+                        </div>
+                        <div className="p-6">
+                          <h3 className="text-4xl font-bold winky-sans-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                            {topic}
+                          </h3>
+                        </div>
+                      </div>
+                    );
+                  }
+
                   return (
                     <div key={key} className="flex flex-row gap-2 items-start">
                       {message.role === 'user' && !isReadonly && (
@@ -119,7 +156,8 @@ const PurePreviewMessage = ({
                       <div
                         data-testid="message-content"
                         className={cn('flex flex-col gap-4', {
-                          'bg-indigo-50 text-indigo-900 dark:bg-indigo-900/20 dark:text-indigo-100 px-3 py-2 rounded-xl': message.role === 'user',
+                          'bg-indigo-50 text-indigo-900 dark:bg-indigo-900/20 dark:text-indigo-100 px-3 py-2 rounded-xl':
+                            message.role === 'user',
                         })}
                       >
                         <Markdown>{part.text}</Markdown>
