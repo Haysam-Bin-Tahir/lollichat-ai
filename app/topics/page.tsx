@@ -58,7 +58,7 @@ export default function TopicsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="hidden md:block group relative overflow-hidden rounded-xl border border-border/40 bg-card shadow-sm transition-all hover:border-primary/50 hover:shadow-xl hover:-translate-y-0.5 duration-300"
+            className="group relative overflow-hidden rounded-xl border border-border/40 bg-card shadow-sm transition-all hover:border-primary/50 hover:shadow-xl hover:-translate-y-0.5 duration-300"
           >
             <Link
               href="/"
@@ -70,7 +70,7 @@ export default function TopicsPage() {
               <h2 className="text-base sm:text-lg md:text-2xl lg:text-3xl font-bold winky-sans-bold text-foreground">
                 New Chat
               </h2>
-              <p className="text-xs sm:text-sm text-muted-foreground max-w-[150px] sm:max-w-none">
+              <p className="hidden sm:block text-xs sm:text-sm text-muted-foreground max-w-[150px] sm:max-w-none">
                 Start a conversation without a topic
               </p>
             </Link>
