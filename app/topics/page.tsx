@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import { customRoles } from '@/lib/topics/custom-roles';
 import { cn } from '@/lib/utils';
 import { SparklesIcon as LucideSparkles } from 'lucide-react';
@@ -79,7 +80,9 @@ export default function TopicsPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
               className={cn(
-                'group relative overflow-hidden rounded-xl border border-border transition-all hover:border-primary/50 min-h-[120px] md:min-h-[200px]',
+                'group relative overflow-hidden rounded-xl border border-border transition-all hover:border-primary/50',
+                'min-h-[120px] md:min-h-[200px]',
+                'w-full h-full',
                 gridConfig[key as keyof typeof gridConfig],
               )}
             >
@@ -101,11 +104,16 @@ export default function TopicsPage() {
                 />
               </div>
 
-              <img
-                src={`/images/topics/${role.img}`}
-                alt={role.topic}
-                className="h-full w-full object-cover transition-all duration-300 group-hover:scale-105"
-              />
+              <div className="relative w-full h-full">
+                <Image
+                  src={`/images/topics/${role.img}`}
+                  alt={role.topic}
+                  fill
+                  sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                  className="object-cover transition-all duration-300 group-hover:scale-105"
+                  priority={key === 'RA' || key === 'LM' || key === 'PH'}
+                />
+              </div>
             </motion.div>
           ))}
         </div>

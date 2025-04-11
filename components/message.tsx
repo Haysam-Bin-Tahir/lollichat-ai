@@ -22,6 +22,7 @@ import { UseChatHelpers } from '@ai-sdk/react';
 import { LucideProps } from 'lucide-react';
 import { SparklesIcon as LucideSparkles } from 'lucide-react';
 import { customRoles } from '@/lib/topics/custom-roles';
+import Image from 'next/image';
 
 const SparklesIcon = ({ className, ...props }: LucideProps) => {
   return <LucideSparkles className={cn(className)} {...props} />;
@@ -120,10 +121,13 @@ const PurePreviewMessage = ({
                       >
                         <div className="relative h-64 overflow-hidden">
                           <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 opacity-90" />
-                          <img
+                          <Image
                             src={`/images/topics/${img}`}
-                            alt="Gradient Background"
-                            className="absolute inset-0 w-full h-full object-cover"
+                            alt="Topic Background"
+                            fill
+                            sizes="(max-width: 1200px) 500px"
+                            className="object-cover"
+                            priority
                           />
                           <SparklesIcon
                             className="absolute top-1 left-1 text-white/80"
