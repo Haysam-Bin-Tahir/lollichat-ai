@@ -96,7 +96,10 @@ export function VoiceSelector({
           className,
         )}
       >
-        <Button variant="outline" className="flex px-2 h-[40px] gap-2">
+        <Button
+          variant="outline"
+          className="flex px-2 h-[40px] sm:h-[34px] gap-2"
+        >
           {selectedOption.icon}
           <span className="hidden md:inline">{selectedOption.label}</span>
           <ChevronDownIcon />
