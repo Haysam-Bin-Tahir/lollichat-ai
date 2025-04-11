@@ -22,7 +22,14 @@ function LoginForm() {
       ? new URLSearchParams(window.location.search)
       : new URLSearchParams();
 
-  const callbackUrl = searchParams.get('callbackUrl') || '/topics';
+  console.log(searchParams.get('callbackUrl'), window.location.origin, 'urls');
+
+  const callbackUrl =
+    searchParams.get('callbackUrl') === `${window.location.origin}/`
+      ? '/topics'
+      : !searchParams.get('callbackUrl')
+        ? '/topics'
+        : searchParams.get('callbackUrl');
   const error = searchParams.get('error');
 
   useEffect(() => {
