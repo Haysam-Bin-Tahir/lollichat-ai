@@ -198,26 +198,26 @@ const PurePreviewMessage = ({
                     return (
                       <div
                         key={key}
-                        className="w-full min-w-[500px] max-w-xl mx-auto overflow-hidden bg-white dark:bg-zinc-900 rounded-xl shadow-xl transform transition-all hover:scale-[1.02] border border-indigo-100 dark:border-indigo-900/30"
+                        className="w-full min-w-[280px] sm:min-w-[400px] md:min-w-[500px] max-w-xl mx-auto overflow-hidden bg-white dark:bg-zinc-900 rounded-xl shadow-xl transform transition-all hover:scale-[1.02] border border-indigo-100 dark:border-indigo-900/30"
                       >
-                        <div className="relative h-64 overflow-hidden">
+                        <div className="relative h-40 sm:h-52 md:h-64 overflow-hidden">
                           <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 opacity-90" />
                           <Image
                             src={`/images/topics/${img}`}
                             alt="Topic Background"
                             fill
-                            sizes="(max-width: 1200px) 500px"
+                            sizes="(max-width: 768px) 280px, (max-width: 1200px) 500px"
                             className="object-cover"
                             priority
                             loading="eager"
                           />
                           <SparklesIcon
                             className="absolute top-1 left-1 text-white/80"
-                            size={40}
+                            size={24}
                           />
                         </div>
-                        <div className="p-6">
-                          <h3 className="text-4xl font-bold winky-sans-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                        <div className="p-3 sm:p-4 md:p-6">
+                          <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold winky-sans-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                             {topic}
                           </h3>
                         </div>

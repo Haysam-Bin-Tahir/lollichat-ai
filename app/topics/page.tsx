@@ -41,11 +41,14 @@ export default function TopicsPage() {
     <div className="min-h-dvh bg-background p-8">
       <div className="max-w-7xl mx-auto space-y-8">
         <div className="flex flex-col items-center gap-4 mb-12">
-          <LucideSparkles size={40} className="text-primary" />
-          <h1 className="text-3xl md:text-5xl font-bold winky-sans-bold text-center bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+          <LucideSparkles
+            size={32}
+            className="text-primary sm:size-36 md:size-40"
+          />
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold winky-sans-bold text-center bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
             Choose Your Topic
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground winky-sans-regular text-center max-w-2xl">
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground winky-sans-regular text-center max-w-2xl">
             Select a topic to start a focused conversation with Lolli
           </p>
         </div>
@@ -59,15 +62,15 @@ export default function TopicsPage() {
           >
             <Link
               href="/"
-              className="absolute inset-0 z-10 p-6 md:p-8 flex flex-col items-center justify-center text-center gap-2 transition-opacity duration-300"
+              className="absolute inset-0 z-10 p-4 sm:p-6 md:p-8 flex flex-col items-center justify-center text-center gap-1.5 sm:gap-2 transition-opacity duration-300"
             >
-              <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <PlusIcon className="size-6 text-primary" />
+              <div className="size-8 sm:size-10 md:size-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <PlusIcon className="size-4 sm:size-5 md:size-6 text-primary" />
               </div>
-              <h2 className="text-lg md:text-2xl lg:text-3xl font-bold winky-sans-bold text-foreground">
+              <h2 className="text-base sm:text-lg md:text-2xl lg:text-3xl font-bold winky-sans-bold text-foreground">
                 New Chat
               </h2>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs sm:text-sm text-muted-foreground max-w-[150px] sm:max-w-none">
                 Start a conversation without a topic
               </p>
             </Link>
@@ -81,17 +84,17 @@ export default function TopicsPage() {
               transition={{ duration: 0.3 }}
               className={cn(
                 'group relative overflow-hidden rounded-xl border border-border transition-all hover:border-primary/50',
-                'min-h-[120px] md:min-h-[200px]',
+                'min-h-[100px] sm:min-h-[120px] md:min-h-[200px]',
                 'w-full h-full',
                 gridConfig[key as keyof typeof gridConfig],
               )}
             >
               <Link
                 href={`/?topic=${key}`}
-                className="absolute inset-0 z-10 p-3 md:p-6 flex flex-col justify-between transition-opacity duration-300"
+                className="absolute inset-0 z-10 p-2 sm:p-3 md:p-6 flex flex-col justify-between transition-opacity duration-300"
               >
                 <div className="flex justify-end" />
-                <h2 className="text-lg md:text-2xl lg:text-3xl font-bold winky-sans-bold text-white [text-shadow:_0_2px_10px_rgb(0_0_0_/_80%)]">
+                <h2 className="text-base sm:text-lg md:text-2xl lg:text-3xl font-bold winky-sans-bold text-white [text-shadow:_0_2px_10px_rgb(0_0_0_/_80%)]">
                   {role.topic}
                 </h2>
               </Link>
