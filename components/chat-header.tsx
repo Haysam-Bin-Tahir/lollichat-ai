@@ -13,6 +13,7 @@ import { memo } from 'react';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { VisibilityType, VisibilitySelector } from './visibility-selector';
 import { TopicsButton } from './topics-button';
+import { VoiceSelector } from '@/components/voice-selector';
 
 function PureChatHeader({
   chatId,
@@ -67,6 +68,10 @@ function PureChatHeader({
           className="order-1 md:order-3"
         />
       )}
+
+      <div className="flex items-center gap-2">
+        <VoiceSelector />
+      </div>
     </header>
   );
 }

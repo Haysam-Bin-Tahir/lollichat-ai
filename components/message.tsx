@@ -3,7 +3,7 @@
 import type { UIMessage } from 'ai';
 import cx from 'classnames';
 import { AnimatePresence, motion } from 'framer-motion';
-import { memo, useState } from 'react';
+import { memo, useState, useCallback, useRef, useEffect } from 'react';
 import type { Vote } from '@/lib/db/schema';
 import { DocumentToolCall, DocumentToolResult } from './document';
 import { PencilEditIcon } from './icons';
@@ -23,6 +23,8 @@ import { LucideProps } from 'lucide-react';
 import { SparklesIcon as LucideSparkles } from 'lucide-react';
 import { customRoles } from '@/lib/topics/custom-roles';
 import Image from 'next/image';
+import { VolumeIcon, VolumeXIcon } from 'lucide-react';
+import { useTextToSpeech } from '@/hooks/use-text-to-speech';
 
 const SparklesIcon = ({ className, ...props }: LucideProps) => {
   return <LucideSparkles className={cn(className)} {...props} />;
@@ -46,6 +48,26 @@ const PurePreviewMessage = ({
   isReadonly: boolean;
 }) => {
   const [mode, setMode] = useState<'view' | 'edit'>('view');
+  const { speak, stop, isPlaying } = useTextToSpeech({ autoPlay: true });
+  const messageRef = useRef<string>('');
+
+  const getMessageText = useCallback((message: UIMessage) => {
+    return message.parts
+      .filter((part) => part.type === 'text')
+      .map((part) => (part as any).text)
+      .join(' ');
+  }, []);
+
+  // Auto-play effect for new messages
+  useEffect(() => {
+    if (message.role === 'assistant' && !isLoading) {
+      const text = getMessageText(message);
+      if (text !== messageRef.current) {
+        messageRef.current = text;
+        speak(text);
+      }
+    }
+  }, [message, isLoading, speak, getMessageText]);
 
   return (
     <AnimatePresence>
@@ -263,13 +285,30 @@ const PurePreviewMessage = ({
             })}
 
             {!isReadonly && (
-              <MessageActions
-                key={`action-${message.id}`}
-                chatId={chatId}
-                message={message}
-                vote={vote}
-                isLoading={isLoading}
-              />
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() =>
+                    isPlaying ? stop() : speak(getMessageText(message))
+                  }
+                  className="opacity-0 group-hover/message:opacity-100 transition-opacity"
+                >
+                  {isPlaying ? (
+                    <VolumeXIcon className="h-4 w-4" />
+                  ) : (
+                    <VolumeIcon className="h-4 w-4" />
+                  )}
+                </Button>
+
+                <MessageActions
+                  key={`action-${message.id}`}
+                  chatId={chatId}
+                  message={message}
+                  vote={vote}
+                  isLoading={isLoading}
+                />
+              </div>
             )}
           </div>
         </div>
