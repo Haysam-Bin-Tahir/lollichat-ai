@@ -102,26 +102,52 @@ export function TextToSpeechProvider({ children }: { children: ReactNode }) {
       lastPlayedRef.current = text;
       window.speechSynthesis.cancel();
 
-      // Break text into chunks of roughly 200 characters, at sentence boundaries
-      const chunks: string[] = [];
-      let currentChunk = '';
+      // Check if using a remote voice (Google voices)
+      const isRemoteVoice = selectedVoice?.name.startsWith('Google');
 
-      const sentences = cleanText.match(/[^.!?]+[.!?]+/g) || [cleanText];
+      if (isRemoteVoice) {
+        // Break text into chunks for remote voices
+        const chunks: string[] = [];
+        let currentChunk = '';
 
-      sentences.forEach((sentence) => {
-        const trimmedSentence = sentence.trim();
-        if (currentChunk.length + trimmedSentence.length <= 200) {
-          currentChunk += ' ' + trimmedSentence;
-        } else {
-          if (currentChunk) chunks.push(currentChunk.trim());
-          currentChunk = trimmedSentence;
-        }
-      });
-      if (currentChunk) chunks.push(currentChunk.trim());
+        const sentences = cleanText.match(/[^.!?]+[.!?]+/g) || [cleanText];
 
-      // Queue all chunks at once
-      chunks.forEach((chunk, index) => {
-        const utterance = new SpeechSynthesisUtterance(chunk);
+        sentences.forEach((sentence) => {
+          const trimmedSentence = sentence.trim();
+          if (currentChunk.length + trimmedSentence.length <= 200) {
+            currentChunk += ' ' + trimmedSentence;
+          } else {
+            if (currentChunk) chunks.push(currentChunk.trim());
+            currentChunk = trimmedSentence;
+          }
+        });
+        if (currentChunk) chunks.push(currentChunk.trim());
+
+        // Queue all chunks at once
+        chunks.forEach((chunk, index) => {
+          const utterance = new SpeechSynthesisUtterance(chunk);
+
+          if (selectedVoice) {
+            utterance.voice = selectedVoice;
+          }
+
+          utterance.pitch = 1;
+          utterance.rate = 1;
+          utterance.volume = 1;
+
+          if (index === 0) {
+            utterance.onstart = () => setIsPlaying(true);
+          }
+          if (index === chunks.length - 1) {
+            utterance.onend = () => setIsPlaying(false);
+            utterance.onerror = () => setIsPlaying(false);
+          }
+
+          window.speechSynthesis.speak(utterance);
+        });
+      } else {
+        // For local voices, speak the entire text at once
+        const utterance = new SpeechSynthesisUtterance(cleanText);
 
         if (selectedVoice) {
           utterance.voice = selectedVoice;
@@ -131,17 +157,12 @@ export function TextToSpeechProvider({ children }: { children: ReactNode }) {
         utterance.rate = 1;
         utterance.volume = 1;
 
-        // Only set playing state for first and last chunks
-        if (index === 0) {
-          utterance.onstart = () => setIsPlaying(true);
-        }
-        if (index === chunks.length - 1) {
-          utterance.onend = () => setIsPlaying(false);
-          utterance.onerror = () => setIsPlaying(false);
-        }
+        utterance.onstart = () => setIsPlaying(true);
+        utterance.onend = () => setIsPlaying(false);
+        utterance.onerror = () => setIsPlaying(false);
 
         window.speechSynthesis.speak(utterance);
-      });
+      }
     },
     [selectedVoice],
   );

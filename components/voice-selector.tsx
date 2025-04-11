@@ -38,10 +38,25 @@ export function VoiceSelector({
       'Google UK English Male',
     ];
 
-    const filteredVoices = voices.filter(
-      (voice) =>
-        allowedVoices.includes(voice.name) &&
-        (voice.lang.startsWith('en-US') || voice.lang.startsWith('en-GB')),
+    // Map of original names to display names
+    const displayNames: Record<string, string> = {
+      'Google US English': 'US Female (Pro)',
+      'Google UK English Female': 'UK Female (Pro)',
+      'Google UK English Male': 'UK Male (Pro)',
+    };
+
+    // Filter and deduplicate voices
+    const filteredVoices = Array.from(
+      new Map(
+        voices
+          .filter(
+            (voice) =>
+              allowedVoices.includes(voice.name) &&
+              (voice.lang.startsWith('en-US') ||
+                voice.lang.startsWith('en-GB')),
+          )
+          .map((voice) => [voice.name, voice]), // Use name as key for deduplication
+      ).values(),
     );
 
     const options: VoiceOption[] = [
@@ -53,7 +68,7 @@ export function VoiceSelector({
       },
       ...filteredVoices.map((voice) => ({
         id: voice.name,
-        label: voice.name,
+        label: displayNames[voice.name] || voice.name,
         description: `${voice.lang} ${voice.localService ? '(Local)' : '(Remote)'}`,
         icon: <Volume2Icon className="h-4 w-4" />,
       })),
