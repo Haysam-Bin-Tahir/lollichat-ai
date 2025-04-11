@@ -128,6 +128,7 @@ const PurePreviewMessage = ({
                             sizes="(max-width: 1200px) 500px"
                             className="object-cover"
                             priority
+                            loading="eager"
                           />
                           <SparklesIcon
                             className="absolute top-1 left-1 text-white/80"

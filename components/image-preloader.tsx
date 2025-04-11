@@ -1,16 +1,23 @@
 'use client';
 
+import Image from 'next/image';
 import { customRoles } from '@/lib/topics/custom-roles';
 
 export function ImagePreloader() {
   return (
     <div className="hidden">
       {Object.entries(customRoles).map(([key, role]) => (
-        <link
+        <Image
           key={key}
-          rel="preload"
-          as="image"
-          href={`/images/topics/${role.img}`}
+          src={`/images/topics/${role.img}`}
+          alt=""
+          width={100}
+          height={100}
+          priority
+          onLoad={() => {
+            // Image is now cached in browser
+            console.debug(`Preloaded: ${role.img}`);
+          }}
         />
       ))}
     </div>
