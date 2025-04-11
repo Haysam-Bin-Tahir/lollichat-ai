@@ -17,11 +17,12 @@ function LoginForm() {
   const [isSuccessful, setIsSuccessful] = useState(false);
 
   // Get search params with a runtime check
-  const searchParams = typeof window !== 'undefined' 
-    ? new URLSearchParams(window.location.search) 
-    : new URLSearchParams();
-    
-  const callbackUrl = searchParams.get('callbackUrl') || '/';
+  const searchParams =
+    typeof window !== 'undefined'
+      ? new URLSearchParams(window.location.search)
+      : new URLSearchParams();
+
+  const callbackUrl = searchParams.get('callbackUrl') || '/topics';
   const error = searchParams.get('error');
 
   useEffect(() => {
@@ -37,9 +38,9 @@ function LoginForm() {
     setIsSubmitting(true);
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
-    
+
     setEmail(email);
-    
+
     try {
       const result = await signIn('credentials', {
         email,

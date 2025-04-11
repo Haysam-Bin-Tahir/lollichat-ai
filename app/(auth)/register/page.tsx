@@ -31,14 +31,14 @@ function RegisterForm() {
       toast({ type: 'success', description: 'Account created successfully!' });
       setIsSuccessful(true);
       router.refresh();
-      router.push('/');
+      router.push('/topics');
     }
   }, [state, router]);
 
   const handleSubmit = async (formData: FormData) => {
     setIsSubmitting(true);
     setEmail(formData.get('email') as string);
-    
+
     try {
       const response = await register(state, formData);
       setState(response);

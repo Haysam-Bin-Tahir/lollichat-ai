@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { customRoles } from '@/lib/topics/custom-roles';
 import { cn } from '@/lib/utils';
 import { SparklesIcon as LucideSparkles } from 'lucide-react';
+import { PlusIcon } from 'lucide-react';
 
 // Grid configuration for different sized tiles
 const gridConfig = {
@@ -53,27 +54,22 @@ export default function TopicsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="group relative overflow-hidden rounded-xl border border-border transition-all hover:border-primary/50"
+            className="group relative overflow-hidden rounded-xl border border-border/40 bg-card shadow-sm transition-all hover:border-primary/50 hover:shadow-xl hover:-translate-y-0.5 duration-300"
           >
             <Link
-              href="/chat"
-              className="absolute inset-0 z-10 p-3 md:p-6 flex flex-col justify-between transition-opacity duration-300"
+              href="/"
+              className="absolute inset-0 z-10 p-6 md:p-8 flex flex-col items-center justify-center text-center gap-2 transition-opacity duration-300"
             >
-              <div className="flex justify-end" />
-              <h2 className="text-lg md:text-2xl lg:text-3xl font-bold winky-sans-bold text-white [text-shadow:_0_2px_10px_rgb(0_0_0_/_80%)]">
-                ✨ Free Chat
+              <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <PlusIcon className="size-6 text-primary" />
+              </div>
+              <h2 className="text-lg md:text-2xl lg:text-3xl font-bold winky-sans-bold text-foreground">
+                New Chat
               </h2>
+              <p className="text-sm text-muted-foreground">
+                Start a conversation without a topic
+              </p>
             </Link>
-
-            <div className="absolute inset-0 pointer-events-none">
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-              <div
-                style={{ transition: 'all .3s ease-out' }}
-                className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20"
-              />
-            </div>
-
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-600 to-blue-600" />
           </motion.div>
 
           {Object.entries(customRoles).map(([key, role]) => (
