@@ -58,15 +58,26 @@ export function VoiceSelector({
         description: 'Disable voice transcription',
         icon: <VolumeXIcon className="h-4 w-4" />,
       },
-      ...filteredVoices.map((voice) => ({
-        id: voice.name,
-        label: displayNames[voice.name] || voice.name,
-        description: `${voice.lang} ${voice.localService ? '(Local)' : '(Remote)'}`,
-        icon: <Volume2Icon className="h-4 w-4" />,
-      })),
+      // If no allowed voices are available but we have a selected voice,
+      // add a generic "Turn On" option
+      ...(filteredVoices.length === 0 && selectedVoice
+        ? [
+            {
+              id: 'on',
+              label: 'Text-to-Speech On',
+              description: `Using ${selectedVoice.name}`,
+              icon: <Volume2Icon className="h-4 w-4" />,
+            },
+          ]
+        : filteredVoices.map((voice) => ({
+            id: voice.name,
+            label: displayNames[voice.name] || voice.name,
+            description: `${voice.lang} ${voice.localService ? '(Local)' : '(Remote)'}`,
+            icon: <Volume2Icon className="h-4 w-4" />,
+          }))),
     ];
     return options;
-  }, [voices]);
+  }, [voices, selectedVoice]);
 
   const selectedOption = useMemo(
     () =>
@@ -103,6 +114,9 @@ export function VoiceSelector({
               if (option.id === 'off') {
                 stop();
                 setSelectedVoice(null);
+              } else if (option.id === 'on' && selectedVoice) {
+                // Re-select the current voice when turning on
+                setSelectedVoice(selectedVoice);
               } else {
                 stop();
                 const voice = voices.find((v) => v.name === option.id);
