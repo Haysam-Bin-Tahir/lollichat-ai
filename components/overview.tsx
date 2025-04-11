@@ -2,13 +2,18 @@ import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { LucideProps } from 'lucide-react';
 import { SparklesIcon as LucideSparkles } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import { customRoles } from '@/lib/topics/custom-roles';
 
 const SparklesIcon = ({ className, ...props }: LucideProps) => {
   return <LucideSparkles className={cn(className)} {...props} />;
 };
 
 export const Overview = () => {
-  return (
+  const topic = useSearchParams().get('topic');
+  const topicConfig = customRoles[topic as keyof typeof customRoles];
+
+  return topicConfig ? null : (
     <motion.div
       key="overview"
       className="max-w-3xl mx-auto md:mt-16"

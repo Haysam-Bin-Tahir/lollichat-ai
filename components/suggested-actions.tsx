@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Button } from './ui/button';
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import { UseChatHelpers } from '@ai-sdk/react';
 import { useSearchParams } from 'next/navigation';
 import { customRoles } from '@/lib/topics/custom-roles';
@@ -15,18 +15,22 @@ interface SuggestedActionsProps {
 function PureSuggestedActions({ chatId, append }: SuggestedActionsProps) {
   const searchParams = useSearchParams();
   const topic = searchParams.get('topic');
+  const hasAppendedRef = useRef(false);
 
   // Auto-invoke append if valid topic exists
   useEffect(() => {
     const topicConfig = customRoles[topic as keyof typeof customRoles];
 
     const topicAction = `${topicConfig?.topic} lollichat-custom-role-assumption:${topic}`;
-    if (topic && topicConfig) {
+    if (topic && topicConfig && chatId && !hasAppendedRef.current) {
+      hasAppendedRef.current = true;
       window.history.replaceState({}, '', `/chat/${chatId}`);
-      append({
-        role: 'user',
-        content: topicAction,
-      });
+      setTimeout(() => {
+        append({
+          role: 'user',
+          content: topicAction,
+        });
+      }, 500);
     }
   }, [topic, chatId, append]);
 
@@ -55,7 +59,9 @@ function PureSuggestedActions({ chatId, append }: SuggestedActionsProps) {
     },
   ];
 
-  return (
+  const topicConfig = customRoles[topic as keyof typeof customRoles];
+
+  return topicConfig ? null : (
     <div
       data-testid="suggested-actions"
       className="grid sm:grid-cols-2 gap-2 w-full"

@@ -79,4 +79,8 @@ export const customRoles = {
     topic: 'Creative Spark: Unleash your imagination',
     img: 'CR.webp',
   },
+  FL: {
+    topic: 'Financial Literacy: The basics of money',
+    img: 'FL.webp',
+  },
 };
