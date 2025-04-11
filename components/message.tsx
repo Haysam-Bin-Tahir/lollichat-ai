@@ -114,7 +114,10 @@ const PurePreviewMessage = ({
                       customRoles[topicCode as keyof typeof customRoles]?.img ||
                       '';
                     return (
-                      <div className="w-full min-w-[500px] max-w-xl mx-auto overflow-hidden bg-white dark:bg-zinc-900 rounded-xl shadow-xl transform transition-all hover:scale-[1.02] border border-indigo-100 dark:border-indigo-900/30">
+                      <div
+                        key={key}
+                        className="w-full min-w-[500px] max-w-xl mx-auto overflow-hidden bg-white dark:bg-zinc-900 rounded-xl shadow-xl transform transition-all hover:scale-[1.02] border border-indigo-100 dark:border-indigo-900/30"
+                      >
                         <div className="relative h-64 overflow-hidden">
                           <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 opacity-90" />
                           <img
