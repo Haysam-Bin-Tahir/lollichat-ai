@@ -58,14 +58,15 @@ export function VoiceSelector({
         description: 'Disable voice transcription',
         icon: <VolumeXIcon className="h-4 w-4" />,
       },
-      // If no allowed voices are available but we have a selected voice,
-      // add a generic "Turn On" option
-      ...(filteredVoices.length === 0 && selectedVoice
+      // Show "Turn On" option if we have no filtered voices but either have a selected voice or available voices
+      ...(filteredVoices.length === 0 && (selectedVoice || voices.length > 0)
         ? [
             {
               id: 'on',
               label: 'Text-to-Speech On',
-              description: `Using ${selectedVoice.name}`,
+              description: selectedVoice
+                ? `Using ${selectedVoice.name}`
+                : 'Enable voice transcription',
               icon: <Volume2Icon className="h-4 w-4" />,
             },
           ]
