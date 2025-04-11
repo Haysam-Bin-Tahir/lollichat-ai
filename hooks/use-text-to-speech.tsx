@@ -88,6 +88,7 @@ export function TextToSpeechProvider({ children }: { children: ReactNode }) {
   const speak = useCallback(
     (text: string, force = false) => {
       if (
+        !selectedVoice ||
         !text ||
         typeof window === 'undefined' ||
         !('speechSynthesis' in window) ||
@@ -103,7 +104,7 @@ export function TextToSpeechProvider({ children }: { children: ReactNode }) {
       window.speechSynthesis.cancel();
 
       // Check if using a remote voice (Google voices)
-      const isRemoteVoice = selectedVoice?.name.startsWith('Google');
+      const isRemoteVoice = selectedVoice.name.startsWith('Google');
 
       if (isRemoteVoice) {
         // Break text into chunks for remote voices
