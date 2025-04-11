@@ -27,10 +27,21 @@ export function VoiceSelector({
   const { voices, selectedVoice, setSelectedVoice } = useTextToSpeech();
 
   const voiceOptions = useMemo(() => {
-    // Filter for only English voices
-    const englishVoices = voices.filter(
+    // Filter for specific voices
+    const allowedVoices = [
+      'Samantha',
+      'Aaron',
+      'Arthur',
+      'Daniel',
+      'Google US English',
+      'Google UK English Female',
+      'Google UK English Male',
+    ];
+
+    const filteredVoices = voices.filter(
       (voice) =>
-        voice.lang.startsWith('en-US') || voice.lang.startsWith('en-GB'),
+        allowedVoices.includes(voice.name) &&
+        (voice.lang.startsWith('en-US') || voice.lang.startsWith('en-GB')),
     );
 
     const options: VoiceOption[] = [
@@ -40,7 +51,7 @@ export function VoiceSelector({
         description: 'Disable voice transcription',
         icon: <VolumeXIcon className="h-4 w-4" />,
       },
-      ...englishVoices.map((voice) => ({
+      ...filteredVoices.map((voice) => ({
         id: voice.name,
         label: voice.name,
         description: `${voice.lang} ${voice.localService ? '(Local)' : '(Remote)'}`,

@@ -48,7 +48,7 @@ const PurePreviewMessage = ({
   isReadonly: boolean;
 }) => {
   const [mode, setMode] = useState<'view' | 'edit'>('view');
-  const { speak, stop, isPlaying } = useTextToSpeech({ autoPlay: true });
+  const { speak, stop, isPlaying } = useTextToSpeech();
   const messageRef = useRef<string>('');
 
   const getMessageText = useCallback((message: UIMessage) => {
