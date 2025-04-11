@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { AuthProvider } from '@/components/auth-provider';
 import './globals.css';
+import { ImagePreloader } from '@/components/image-preloader';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://chat.vercel.ai'),
@@ -88,6 +89,7 @@ export default async function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+            <ImagePreloader />
             <Toaster position="top-center" />
             {children}
           </ThemeProvider>
