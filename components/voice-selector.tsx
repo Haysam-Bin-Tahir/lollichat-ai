@@ -119,7 +119,7 @@ export function VoiceSelector({
 
       <DropdownMenuContent
         align="end"
-        className="min-w-[300px] max-h-[300px] overflow-y-auto"
+        className="min-w-[200px] sm:min-w-[300px] max-h-[300px] overflow-y-auto"
       >
         {voiceOptions.map((option) => (
           <DropdownMenuItem
