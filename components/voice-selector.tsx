@@ -83,7 +83,13 @@ export function VoiceSelector({
   const selectedOption = useMemo(
     () =>
       voiceOptions.find(
-        (option) => option.id === (selectedVoice?.name ?? 'off'),
+        (option) =>
+          option.id ===
+          (selectedVoice
+            ? option.id === 'on'
+              ? 'on'
+              : selectedVoice.name
+            : 'off'),
       ) ?? voiceOptions[0],
     [voiceOptions, selectedVoice],
   );
