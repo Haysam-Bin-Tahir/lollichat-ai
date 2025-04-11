@@ -26,30 +26,33 @@ export function VoiceSelector({
   const [open, setOpen] = useState(false);
   const { voices, selectedVoice, setSelectedVoice, stop } = useTextToSpeech();
 
-  const voiceOptions = useMemo(() => {
-    // Filter for specific voices
-    const allowedVoices = ['Samantha', 'Aaron', 'Arthur', 'Daniel'];
+  // Move filteredVoices outside of voiceOptions memo
+  const filteredVoices = useMemo(
+    () =>
+      Array.from(
+        new Map(
+          voices
+            .filter(
+              (voice) =>
+                ['Samantha', 'Aaron', 'Arthur', 'Daniel'].includes(
+                  voice.name,
+                ) &&
+                (voice.lang.startsWith('en-US') ||
+                  voice.lang.startsWith('en-GB')),
+            )
+            .map((voice) => [voice.name, voice]),
+        ).values(),
+      ),
+    [voices],
+  );
 
+  const voiceOptions = useMemo(() => {
     // Map of original names to display names (keeping for future use)
     const displayNames: Record<string, string> = {
       // 'Google US English': 'US Female (Pro)',
       // 'Google UK English Female': 'UK Female (Pro)',
       // 'Google UK English Male': 'UK Male (Pro)',
     };
-
-    // Filter and deduplicate voices
-    const filteredVoices = Array.from(
-      new Map(
-        voices
-          .filter(
-            (voice) =>
-              allowedVoices.includes(voice.name) &&
-              (voice.lang.startsWith('en-US') ||
-                voice.lang.startsWith('en-GB')),
-          )
-          .map((voice) => [voice.name, voice]),
-      ).values(),
-    );
 
     const options: VoiceOption[] = [
       {
@@ -78,7 +81,7 @@ export function VoiceSelector({
           }))),
     ];
     return options;
-  }, [voices, selectedVoice]);
+  }, [voices, selectedVoice, filteredVoices]);
 
   const selectedOption = useMemo(
     () =>
@@ -86,12 +89,12 @@ export function VoiceSelector({
         (option) =>
           option.id ===
           (selectedVoice
-            ? option.id === 'on'
+            ? filteredVoices.length === 0
               ? 'on'
               : selectedVoice.name
             : 'off'),
       ) ?? voiceOptions[0],
-    [voiceOptions, selectedVoice],
+    [voiceOptions, selectedVoice, filteredVoices],
   );
 
   return (
