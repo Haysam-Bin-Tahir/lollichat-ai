@@ -19,11 +19,13 @@ export function AuthForm({
   return (
     <div className="flex flex-col gap-6">
       {/* Google auth option */}
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 px-4 sm:px-16">
         <GoogleButton />
         <div className="relative flex items-center justify-center">
-          <div className="border-t border-gray-300 dark:border-zinc-700 absolute w-full"></div>
-          <div className="bg-background text-xs text-gray-500 dark:text-zinc-400 relative px-2">OR</div>
+          <div className="border-t border-gray-300 dark:border-zinc-700 absolute w-full" />
+          <div className="bg-background text-xs text-gray-500 dark:text-zinc-400 relative px-2">
+            OR
+          </div>
         </div>
       </div>
 
