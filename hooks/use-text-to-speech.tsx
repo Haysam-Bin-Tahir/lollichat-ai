@@ -38,6 +38,7 @@ export function TextToSpeechProvider({ children }: { children: ReactNode }) {
     useState<SpeechSynthesisVoice | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const lastPlayedRef = useRef<string>('');
+  const isStopped = useRef<boolean>(false);
 
   useEffect(() => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
@@ -88,6 +89,7 @@ export function TextToSpeechProvider({ children }: { children: ReactNode }) {
   const speak = useCallback(
     (text: string, force = false, onEnd?: () => void) => {
       if (
+        isStopped.current ||
         !selectedVoice ||
         !text ||
         typeof window === 'undefined' ||
@@ -141,8 +143,10 @@ export function TextToSpeechProvider({ children }: { children: ReactNode }) {
           }
           if (index === chunks.length - 1) {
             utterance.onend = () => {
-              setIsPlaying(false);
-              onEnd?.();
+              if (!isStopped.current) {
+                setIsPlaying(false);
+                onEnd?.();
+              }
             };
             utterance.onerror = () => {
               setIsPlaying(false);
@@ -166,8 +170,10 @@ export function TextToSpeechProvider({ children }: { children: ReactNode }) {
 
         utterance.onstart = () => setIsPlaying(true);
         utterance.onend = () => {
-          setIsPlaying(false);
-          onEnd?.();
+          if (!isStopped.current) {
+            setIsPlaying(false);
+            onEnd?.();
+          }
         };
         utterance.onerror = () => {
           setIsPlaying(false);
@@ -182,9 +188,22 @@ export function TextToSpeechProvider({ children }: { children: ReactNode }) {
 
   const stop = useCallback(() => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+
+    // Set stopped flag
+    isStopped.current = true;
+
+    // Cancel any ongoing speech
     window.speechSynthesis.cancel();
     setIsPlaying(false);
+
+    // Reset all refs
+    lastPlayedRef.current = '';
   }, []);
+
+  // Reset stopped flag when voice changes
+  useEffect(() => {
+    isStopped.current = false;
+  }, [selectedVoice]);
 
   const value = {
     speak,

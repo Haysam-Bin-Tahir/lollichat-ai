@@ -91,7 +91,7 @@ export default async function RootLayout({
             disableTransitionOnChange
           >
             <TextToSpeechProvider>
-              <ImagePreloader />
+              {/* <ImagePreloader /> */}
               <Toaster position="top-center" />
               {children}
             </TextToSpeechProvider>

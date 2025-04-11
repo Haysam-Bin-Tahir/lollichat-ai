@@ -73,7 +73,7 @@ const PurePreviewMessage = ({
 
       speak(sentence, false, () => {
         speakingRef.current = false;
-        speakNextSentence();
+        speakNextSentence(); // Try to speak next sentence after current one finishes
       });
     }
   }, [speak]);
@@ -99,9 +99,17 @@ const PurePreviewMessage = ({
           lastLengthRef.current = currentLength;
 
           // Try to speak next sentence if not already speaking
-          speakNextSentence();
+          if (!speakingRef.current) {
+            speakNextSentence();
+          }
         }
       }
+    } else {
+      // Reset refs when voice is turned off
+      messageRef.current = '';
+      lastLengthRef.current = 0;
+      pendingTextRef.current = '';
+      speakingRef.current = false;
     }
   }, [
     message,

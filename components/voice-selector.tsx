@@ -104,6 +104,7 @@ export function VoiceSelector({
                 stop();
                 setSelectedVoice(null);
               } else {
+                stop();
                 const voice = voices.find((v) => v.name === option.id);
                 if (voice) setSelectedVoice(voice);
               }
