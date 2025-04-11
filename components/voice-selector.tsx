@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useMemo, useState } from 'react';
+import { ReactNode, useMemo, useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -25,6 +25,7 @@ export function VoiceSelector({
 }: React.ComponentProps<typeof Button>) {
   const [open, setOpen] = useState(false);
   const { voices, selectedVoice, setSelectedVoice, stop } = useTextToSpeech();
+  const lastVoiceRef = useRef<SpeechSynthesisVoice | null>(null);
 
   // Move filteredVoices outside of voiceOptions memo
   const filteredVoices = useMemo(
@@ -126,20 +127,12 @@ export function VoiceSelector({
             onSelect={() => {
               if (option.id === 'off') {
                 stop();
+                lastVoiceRef.current = selectedVoice;
                 setSelectedVoice(null);
               } else if (option.id === 'on') {
                 stop();
-                // If we have a selected voice, use it
-                if (selectedVoice) {
-                  setSelectedVoice(selectedVoice);
-                }
-                // Otherwise try to find a suitable voice from available voices
-                else if (voices.length > 0) {
-                  const voice = voices.find(
-                    (v) =>
-                      v.lang.startsWith('en-US') || v.lang.startsWith('en-GB'),
-                  );
-                  if (voice) setSelectedVoice(voice);
+                if (lastVoiceRef.current) {
+                  setSelectedVoice(lastVoiceRef.current);
                 }
               } else {
                 stop();
