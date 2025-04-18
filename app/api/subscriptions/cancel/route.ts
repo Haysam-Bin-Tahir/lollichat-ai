@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
 
     // Get active subscription
     const activeSubscription = await getActiveSubscriptionForUser(
-      session.user.id,
+      session.user.id || '',
     );
 
     if (!activeSubscription) {
