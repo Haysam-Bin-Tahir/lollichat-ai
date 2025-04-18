@@ -87,7 +87,7 @@ export function useFeatureAccess(featureName: string): {
   // Define feature access rules
   const featureAccess: Record<string, string[]> = {
     'advanced-models': ['pro', 'business'],
-    'unlimited-messages': ['basic', 'pro', 'business'],
+    'unlimited-messages': ['standard', 'priority'], // Only standard and priority tiers
     'file-upload': ['pro', 'business'],
     'priority-support': ['business'],
     'team-collaboration': ['business'],

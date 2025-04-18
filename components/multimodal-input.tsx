@@ -24,6 +24,7 @@ import { Textarea } from './ui/textarea';
 import { SuggestedActions } from './suggested-actions';
 import equal from 'fast-deep-equal';
 import { UseChatHelpers } from '@ai-sdk/react';
+import { useMessageLimit } from '@/hooks/use-message-limit';
 
 function PureMultimodalInput({
   chatId,
@@ -54,6 +55,13 @@ function PureMultimodalInput({
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { width } = useWindowSize();
+  const messageCount = messages.filter((m) => m.role === 'user').length;
+  const { isLimitReached, hasUnlimitedMessages } =
+    useMessageLimit(messageCount);
+
+  // Determine if input should be disabled
+  const inputDisabled =
+    status !== 'ready' || (isLimitReached && !hasUnlimitedMessages);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -105,6 +113,16 @@ function PureMultimodalInput({
   const [uploadQueue, setUploadQueue] = useState<Array<string>>([]);
 
   const submitForm = useCallback(() => {
+    if (inputDisabled) {
+      if (isLimitReached && !hasUnlimitedMessages) {
+        toast.error(
+          "You've reached the free message limit. Please upgrade to continue.",
+        );
+        return;
+      }
+      return;
+    }
+
     window.history.replaceState({}, '', `/chat/${chatId}`);
 
     handleSubmit(undefined, {
@@ -125,6 +143,9 @@ function PureMultimodalInput({
     setLocalStorageInput,
     width,
     chatId,
+    inputDisabled,
+    isLimitReached,
+    hasUnlimitedMessages,
   ]);
 
   const uploadFile = async (file: File) => {
@@ -195,6 +216,7 @@ function PureMultimodalInput({
         multiple
         onChange={handleFileChange}
         tabIndex={-1}
+        disabled={inputDisabled}
       />
 
       {(attachments.length > 0 || uploadQueue.length > 0) && (
@@ -220,37 +242,72 @@ function PureMultimodalInput({
         </div>
       )}
 
-      <Textarea
-        data-testid="multimodal-input"
-        ref={textareaRef}
-        placeholder="Send a message..."
-        value={input}
-        onChange={handleInput}
-        className={cx(
-          'min-h-[24px] max-h-[calc(75dvh)] overflow-hidden resize-none rounded-2xl !text-[22px] bg-muted pb-10 dark:border-zinc-700 winky-sans-regular',
-          className,
+      <div className="relative">
+        {isLimitReached && !hasUnlimitedMessages && (
+          <div className="absolute inset-0 flex items-center justify-center bg-background/95 z-10 rounded-2xl border border-red-200 dark:border-red-800">
+            <div className="flex items-center justify-between w-full px-6 py-4">
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold mb-1">
+                  Message Limit Reached
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  You've reached the free message limit. Upgrade to a paid plan
+                  for unlimited messages.
+                </p>
+              </div>
+              <div className="ml-4">
+                <Button asChild>
+                  <a href="/plans">View Plans</a>
+                </Button>
+              </div>
+            </div>
+          </div>
         )}
-        rows={2}
-        autoFocus
-        onKeyDown={(event) => {
-          if (
-            event.key === 'Enter' &&
-            !event.shiftKey &&
-            !event.nativeEvent.isComposing
-          ) {
-            event.preventDefault();
 
-            if (status !== 'ready') {
-              toast.error('Please wait for the model to finish its response!');
-            } else {
-              submitForm();
+        <Textarea
+          data-testid="multimodal-input"
+          ref={textareaRef}
+          placeholder="Send a message..."
+          value={input}
+          onChange={handleInput}
+          className={cx(
+            'min-h-[24px] max-h-[calc(75dvh)] overflow-hidden resize-none rounded-2xl !text-[22px] bg-muted pb-10 dark:border-zinc-700 winky-sans-regular',
+            inputDisabled && 'opacity-70 cursor-not-allowed',
+            className,
+          )}
+          rows={2}
+          autoFocus
+          disabled={inputDisabled}
+          onKeyDown={(event) => {
+            if (
+              event.key === 'Enter' &&
+              !event.shiftKey &&
+              !event.nativeEvent.isComposing
+            ) {
+              event.preventDefault();
+
+              if (status !== 'ready') {
+                toast.error(
+                  'Please wait for the model to finish its response!',
+                );
+              } else if (isLimitReached && !hasUnlimitedMessages) {
+                toast.error(
+                  "You've reached the free message limit. Please upgrade to continue.",
+                );
+              } else {
+                submitForm();
+              }
             }
-          }
-        }}
-      />
+          }}
+        />
+      </div>
 
       <div className="absolute bottom-0 p-2 w-fit flex flex-row justify-start">
-        <AttachmentsButton fileInputRef={fileInputRef} status={status} />
+        <AttachmentsButton
+          fileInputRef={fileInputRef}
+          status={status}
+          disabled={inputDisabled}
+        />
       </div>
 
       <div className="absolute bottom-0 right-0 p-2 w-fit flex flex-row justify-end">
@@ -261,6 +318,7 @@ function PureMultimodalInput({
             input={input}
             submitForm={submitForm}
             uploadQueue={uploadQueue}
+            disabled={inputDisabled}
           />
         )}
       </div>
@@ -282,9 +340,11 @@ export const MultimodalInput = memo(
 function PureAttachmentsButton({
   fileInputRef,
   status,
+  disabled,
 }: {
   fileInputRef: React.MutableRefObject<HTMLInputElement | null>;
   status: UseChatHelpers['status'];
+  disabled: boolean;
 }) {
   return (
     <Button
@@ -294,7 +354,7 @@ function PureAttachmentsButton({
         event.preventDefault();
         fileInputRef.current?.click();
       }}
-      disabled={status !== 'ready'}
+      disabled={status !== 'ready' || disabled}
       variant="ghost"
     >
       <PaperclipIcon size={14} />
@@ -332,10 +392,12 @@ function PureSendButton({
   submitForm,
   input,
   uploadQueue,
+  disabled,
 }: {
   submitForm: () => void;
   input: string;
   uploadQueue: Array<string>;
+  disabled: boolean;
 }) {
   return (
     <Button
@@ -345,7 +407,7 @@ function PureSendButton({
         event.preventDefault();
         submitForm();
       }}
-      disabled={input.length === 0 || uploadQueue.length > 0}
+      disabled={input.length === 0 || uploadQueue.length > 0 || disabled}
     >
       <ArrowUpIcon size={14} />
     </Button>
@@ -356,5 +418,6 @@ const SendButton = memo(PureSendButton, (prevProps, nextProps) => {
   if (prevProps.uploadQueue.length !== nextProps.uploadQueue.length)
     return false;
   if (prevProps.input !== nextProps.input) return false;
+  if (prevProps.disabled !== nextProps.disabled) return false;
   return true;
 });
