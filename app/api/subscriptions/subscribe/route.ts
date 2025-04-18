@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import { auth } from '@/app/(auth)/auth';
 import { z } from 'zod';
 import {
@@ -130,7 +131,7 @@ export async function POST(request: NextRequest) {
     } catch (error) {
       console.error('Payment validation failed:', error);
       return NextResponse.json(
-        { error: 'Payment validation failed: ' + error.message },
+        { error: `Payment validation failed: ${(error as any).message}` },
         { status: 400 },
       );
     }
@@ -138,7 +139,7 @@ export async function POST(request: NextRequest) {
     // Create payment transaction record (pending)
     console.log('Creating payment transaction record...');
     const transactionId = await createPaymentTransaction({
-      userId: session.user.id,
+      userId: session.user.id || '',
       amount: Number(plan.price),
       status: 'pending',
     });
@@ -146,7 +147,8 @@ export async function POST(request: NextRequest) {
 
     // Create customer profile in Authorize.Net
     console.log('Creating customer profile...');
-    let customerProfileId, customerPaymentProfileId;
+    let customerProfileId: any;
+    let customerPaymentProfileId: any;
     try {
       const customerProfile = await createCustomerProfile(
         session.user.email || '',
@@ -179,14 +181,16 @@ export async function POST(request: NextRequest) {
       }
 
       return NextResponse.json(
-        { error: 'Failed to create customer profile: ' + error.message },
+        {
+          error: `Failed to create customer profile: ${(error as any).message}`,
+        },
         { status: 500 },
       );
     }
 
     // Create subscription in Authorize.Net
     console.log('Creating subscription...');
-    let subscriptionId;
+    let subscriptionId: any;
     try {
       subscriptionId = await createAuthorizeNetSubscription(
         customerProfileId,
@@ -214,7 +218,7 @@ export async function POST(request: NextRequest) {
       }
 
       return NextResponse.json(
-        { error: 'Failed to create subscription: ' + error.message },
+        { error: `Failed to create subscription: ${(error as any).message}` },
         { status: 500 },
       );
     }
@@ -233,7 +237,7 @@ export async function POST(request: NextRequest) {
       // Create subscription record
       const startDate = new Date();
       const subscriptionRecordId = await createSubscription({
-        userId: session.user.id,
+        userId: session.user.id || '',
         planId,
         status: 'active',
         authorizeNetSubscriptionId: subscriptionId,
