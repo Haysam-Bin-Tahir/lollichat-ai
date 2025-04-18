@@ -37,7 +37,7 @@ export default async function PlansPage() {
     userId ? getActiveSubscriptionForUser(userId) : null,
   ]);
 
-  let activePlan;
+  let activePlan: any;
   if (activeSubscription) {
     activePlan = await getSubscriptionPlanById(activeSubscription.planId);
   }
