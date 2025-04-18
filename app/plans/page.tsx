@@ -42,6 +42,8 @@ export default async function PlansPage() {
     activePlan = await getSubscriptionPlanById(activeSubscription.planId);
   }
 
+  console.log(activePlan, 'activePlan');
+
   return (
     <div className="container max-w-6xl mx-auto px-4 py-8">
       <div className="flex items-center mb-6">
@@ -71,6 +73,7 @@ export default async function PlansPage() {
             key={plan.id}
             plan={plan}
             isActive={activePlan?.id === plan.id}
+            isBasicPlanActive={!activePlan}
           />
         ))}
       </div>
