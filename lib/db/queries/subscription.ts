@@ -167,3 +167,16 @@ export async function getPaymentTransactionsForUser(userId: string) {
     .where(eq(paymentTransaction.userId, userId))
     .orderBy(desc(paymentTransaction.createdAt));
 }
+
+// Get a subscription by ID
+export async function getSubscriptionById(id: string) {
+  try {
+    const result = await db.query.userSubscription.findFirst({
+      where: eq(userSubscription.id, id),
+    });
+    return result;
+  } catch (error) {
+    console.error('Error getting subscription by ID:', error);
+    throw error;
+  }
+}

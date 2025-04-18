@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { auth } from '@/app/(auth)/auth';
 import { PlanCard } from '@/components/subscription/plan-card';
+import { SubscriptionManagement } from '@/components/subscription/subscription-management';
 import {
   getAllSubscriptionPlans,
   getActiveSubscriptionForUser,
@@ -56,6 +57,15 @@ export default async function PlansPage() {
       <h1 className="text-3xl font-bold text-center mb-8">
         Subscription Plans
       </h1>
+
+      {activeSubscription && activePlan && (
+        <div className="mb-12 max-w-md mx-auto">
+          <SubscriptionManagement
+            subscription={activeSubscription}
+            plan={activePlan}
+          />
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {plans.map((plan) => (
