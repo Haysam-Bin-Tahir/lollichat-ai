@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
 
     // Check if user already has an active subscription
     const activeSubscription = await getActiveSubscriptionForUser(
-      session.user.id,
+      session.user.id || '',
     );
 
     // If user has an active subscription, handle plan change
@@ -114,7 +114,7 @@ export async function POST(request: NextRequest) {
     // Continue with the normal subscription process
     console.log('Validating payment method...');
     // Validate payment method with a $0 authorization
-    let authTransactionId;
+    let authTransactionId: any;
     try {
       authTransactionId = await validatePaymentMethod(
         paymentInfo.cardNumber,
