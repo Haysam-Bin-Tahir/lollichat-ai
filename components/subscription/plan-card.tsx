@@ -14,34 +14,45 @@ import {
 import { SubscriptionPlan, UserSubscription } from '@/lib/db/schema';
 import { PaymentModal } from './payment-modal';
 import { cn } from '@/lib/utils';
+import { formatCurrency } from '@/lib/utils';
 
 type PlanCardProps = {
   plan: SubscriptionPlan;
   activeSubscription?: UserSubscription | null;
   onSubscribe?: () => void;
+  isActive?: boolean;
 };
 
 export function PlanCard({
   plan,
   activeSubscription,
   onSubscribe,
+  isActive = false,
 }: PlanCardProps) {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
-  const isActive =
+  const isActiveSubscription =
     activeSubscription?.planId === plan.id &&
     activeSubscription?.status === 'active';
   const isPriority = plan.name === 'Priority';
 
+  const features = [
+    'Access to all AI models',
+    'Unlimited conversations',
+    'Priority support',
+    'Advanced features',
+  ];
+
   return (
     <>
       <Card
-        className={cn(
-          'flex flex-col h-full transition-all duration-200',
-          isPriority && 'border-primary shadow-md',
-          isActive && 'ring-2 ring-primary',
-        )}
+        className={`relative overflow-hidden ${isActive ? 'border-primary border-2' : ''}`}
       >
+        {isActive && (
+          <div className="absolute top-0 right-0 bg-primary text-primary-foreground px-3 py-1 text-sm font-medium">
+            Current Plan
+          </div>
+        )}
         <CardHeader className={cn('pb-4', isPriority && 'bg-primary/5')}>
           {isPriority && (
             <div className="flex items-center text-primary mb-2">
@@ -53,35 +64,29 @@ export function PlanCard({
           <CardDescription>{plan.description}</CardDescription>
           <div className="mt-2">
             <span className="text-3xl font-bold">
-              ${Number(plan.price).toFixed(2)}
+              {formatCurrency(Number(plan.price))}
             </span>
             <span className="text-muted-foreground ml-1">/month</span>
           </div>
         </CardHeader>
         <CardContent className="flex-grow">
           <ul className="space-y-2">
-            {plan.features.map((feature, index) => (
-              <li key={index} className="flex items-start">
-                <Check className="h-5 w-5 text-primary shrink-0 mr-2" />
+            {features.map((feature, index) => (
+              <li key={index} className="flex items-center">
+                <Check className="h-4 w-4 mr-2 text-primary" />
                 <span>{feature}</span>
               </li>
             ))}
           </ul>
         </CardContent>
         <CardFooter>
-          {isActive ? (
-            <Button className="w-full" variant="outline" disabled>
-              Current Plan
-            </Button>
-          ) : (
-            <Button
-              className="w-full"
-              variant={isPriority ? 'default' : 'outline'}
-              onClick={() => setIsPaymentModalOpen(true)}
-            >
-              Subscribe
-            </Button>
-          )}
+          <Button
+            onClick={() => setIsPaymentModalOpen(true)}
+            className="w-full"
+            disabled={isActive}
+          >
+            {isActive ? 'Current Plan' : 'Subscribe'}
+          </Button>
         </CardFooter>
       </Card>
 

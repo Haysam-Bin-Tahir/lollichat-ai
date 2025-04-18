@@ -179,3 +179,13 @@ export function getRandomAmount() {
 export function getDate() {
   return new Date().toISOString().substring(0, 10);
 }
+
+/**
+ * Formats a number as currency (USD)
+ */
+export function formatCurrency(amount: number): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(amount);
+}

@@ -46,6 +46,8 @@ export function PaymentModal({
             onSuccess={() => {
               onClose();
               if (onSuccess) onSuccess();
+              // Refresh the page to update the UI
+              window.location.reload();
             }}
             onCancel={onClose}
           />
