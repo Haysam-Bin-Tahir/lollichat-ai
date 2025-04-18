@@ -6,10 +6,7 @@ import {
 } from '@/lib/db/queries/subscription';
 import { cancelSubscription as cancelAuthorizeNetSubscription } from '@/lib/services/authorize-net';
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } },
-) {
+export async function POST(request: NextRequest, params: any) {
   try {
     const session = await auth();
 
