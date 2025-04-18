@@ -325,9 +325,11 @@ export const createSubscription = async (
     );
     const merchantAuthenticationType = getMerchantAuthentication();
 
+    const uniqueId = `${Date.now()}`;
+
     // Set up subscription
     const subscription = new APIContracts.ARBSubscriptionType();
-    subscription.setName(planName);
+    subscription.setName(`${planName}-${uniqueId}`);
 
     // Set payment schedule
     const paymentSchedule = new APIContracts.PaymentScheduleType();
@@ -354,6 +356,13 @@ export const createSubscription = async (
     profile.setCustomerProfileId(customerProfileId);
     profile.setCustomerPaymentProfileId(customerPaymentProfileId);
     subscription.setProfile(profile);
+
+    // Add order information with shorter unique reference ID
+    // Authorize.Net has a 20-character limit for invoice numbers
+    const order = new APIContracts.OrderType();
+    order.setInvoiceNumber(`INV-${uniqueId}`); // Much shorter invoice number
+    order.setDescription(`Sub: ${planName}`); // Shorter description
+    subscription.setOrder(order);
 
     // Create request
     const createRequest = new APIContracts.ARBCreateSubscriptionRequest();
