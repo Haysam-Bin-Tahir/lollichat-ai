@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, ChangeEvent, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import type { ChangeEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { toast } from 'sonner';
@@ -8,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2 } from 'lucide-react';
-import { SubscriptionPlan } from '@/lib/db/schema';
+import type { SubscriptionPlan } from '@/lib/db/schema';
 
 // Custom validation for expiration date
 const expirationDateSchema = z
@@ -26,8 +27,8 @@ const expirationDateSchema = z
       const currentMonth = currentDate.getMonth() + 1; // JavaScript months are 0-indexed
 
       // Parse input values
-      const year = parseInt(data.expirationYear, 10);
-      const month = parseInt(data.expirationMonth, 10);
+      const year = Number.parseInt(data.expirationYear, 10);
+      const month = Number.parseInt(data.expirationMonth, 10);
 
       // Check if date is in the future
       return (

@@ -51,7 +51,7 @@ export function CancelSubscriptionButton({
       console.error('Error canceling subscription:', error);
       toast({
         title: 'Error',
-        description: error.message || 'Failed to cancel subscription',
+        description: (error as any).message || 'Failed to cancel subscription',
         variant: 'destructive',
       });
     } finally {
