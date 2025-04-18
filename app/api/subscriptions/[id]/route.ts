@@ -3,10 +3,7 @@ import { auth } from '@/app/(auth)/auth';
 import { getSubscriptionPlanById } from '@/lib/db/queries/subscription';
 
 // GET /api/subscriptions/[id] - Get subscription plan by ID
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } },
-) {
+export async function GET(request: NextRequest, { params }: any) {
   try {
     const session = await auth();
 
