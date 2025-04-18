@@ -7,6 +7,7 @@ import type { User } from 'next-auth';
 import { memo, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import useSWR from 'swr';
+import { cn } from '@/lib/utils';
 
 import {
   CheckCircleFillIcon,
@@ -49,6 +50,9 @@ import {
 import type { Chat } from '@/lib/db/schema';
 import { fetcher } from '@/lib/utils';
 import { useChatVisibility } from '@/hooks/use-chat-visibility';
+import { useChatLimit } from '@/hooks/use-chat-limit';
+import { useFeatureAccess } from '@/hooks/use-subscription';
+import { AlertCircle } from 'lucide-react';
 
 type GroupedChats = {
   today: Chat[];
@@ -73,6 +77,7 @@ const PureChatItem = ({
     chatId: chat.id,
     initialVisibility: chat.visibility,
   });
+  const { hasAccess: canSharePublicly } = useFeatureAccess('public-chats');
 
   return (
     <SidebarMenuItem>
@@ -116,10 +121,16 @@ const PureChatItem = ({
                   ) : null}
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  className="cursor-pointer flex-row justify-between"
+                  className={cn(
+                    'cursor-pointer flex-row justify-between',
+                    !canSharePublicly && 'opacity-50 cursor-not-allowed',
+                  )}
                   onClick={() => {
-                    setVisibilityType('public');
+                    if (canSharePublicly) {
+                      setVisibilityType('public');
+                    }
                   }}
+                  disabled={!canSharePublicly}
                 >
                   <div className="flex flex-row gap-2 items-center">
                     <GlobeIcon />
@@ -127,6 +138,13 @@ const PureChatItem = ({
                   </div>
                   {visibilityType === 'public' ? <CheckCircleFillIcon /> : null}
                 </DropdownMenuItem>
+
+                {!canSharePublicly && (
+                  <div className="px-2 py-1.5 text-xs text-amber-500 flex items-center gap-1.5 border-t border-border/50 mt-1 pt-2">
+                    <AlertCircle size={14} />
+                    <span>Requires Standard or Priority plan</span>
+                  </div>
+                )}
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>
@@ -160,6 +178,8 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
   } = useSWR<Array<Chat>>(user ? '/api/history' : null, fetcher, {
     fallbackData: [],
   });
+
+  const { chatCount, chatHistoryLimit, isLimitReached } = useChatLimit();
 
   useEffect(() => {
     mutate();
@@ -279,6 +299,27 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
     );
   };
 
+  const renderChatLimitInfo = () => {
+    if (!user || isLoading) return null;
+
+    return (
+      <div className="px-3 py-2 mt-2 text-xs text-sidebar-foreground/70 border-t border-sidebar-accent-foreground/10">
+        <div className="flex justify-between items-center">
+          <span>Chat storage</span>
+          <span className={isLimitReached ? 'text-red-500' : ''}>
+            {chatCount} /{' '}
+            {chatHistoryLimit === Infinity ? '∞' : chatHistoryLimit}
+          </span>
+        </div>
+        {isLimitReached && (
+          <div className="mt-1 text-red-500">
+            Limit reached. Please delete some chats or upgrade your plan.
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <>
       <SidebarGroup>
@@ -395,6 +436,7 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarGroup>
+      {renderChatLimitInfo()}
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>

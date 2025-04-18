@@ -10,9 +10,14 @@ import { customRoles } from '@/lib/topics/custom-roles';
 interface SuggestedActionsProps {
   chatId: string;
   append: UseChatHelpers['append'];
+  disabled?: boolean;
 }
 
-function PureSuggestedActions({ chatId, append }: SuggestedActionsProps) {
+function PureSuggestedActions({
+  chatId,
+  append,
+  disabled,
+}: SuggestedActionsProps) {
   const searchParams = useSearchParams();
   const topic = searchParams.get('topic');
   const hasAppendedRef = useRef(false);
@@ -77,7 +82,9 @@ function PureSuggestedActions({ chatId, append }: SuggestedActionsProps) {
         >
           <Button
             variant="ghost"
+            disabled={disabled}
             onClick={async () => {
+              if (disabled) return;
               window.history.replaceState({}, '', `/chat/${chatId}`);
 
               append({

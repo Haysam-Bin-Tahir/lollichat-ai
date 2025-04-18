@@ -25,6 +25,7 @@ import { SuggestedActions } from './suggested-actions';
 import equal from 'fast-deep-equal';
 import { UseChatHelpers } from '@ai-sdk/react';
 import { useMessageLimit } from '@/hooks/use-message-limit';
+import { useChatLimit } from '@/hooks/use-chat-limit';
 
 function PureMultimodalInput({
   chatId,
@@ -56,12 +57,24 @@ function PureMultimodalInput({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { width } = useWindowSize();
   const messageCount = messages.filter((m) => m.role === 'user').length;
-  const { isLimitReached, hasUnlimitedMessages } =
+  const { isLimitReached: isMessageLimitReached, hasUnlimitedMessages } =
     useMessageLimit(messageCount);
+
+  // Add chat limit check
+  const {
+    isLimitReached: isChatLimitReached,
+    chatHistoryLimit,
+    remainingChats,
+  } = useChatLimit();
+
+  // Check if this is a new chat attempt
+  const isNewChat = !chatId || messages.length === 0;
 
   // Determine if input should be disabled
   const inputDisabled =
-    status !== 'ready' || (isLimitReached && !hasUnlimitedMessages);
+    status !== 'ready' ||
+    (isMessageLimitReached && !hasUnlimitedMessages) ||
+    (isNewChat && isChatLimitReached);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -114,7 +127,7 @@ function PureMultimodalInput({
 
   const submitForm = useCallback(() => {
     if (inputDisabled) {
-      if (isLimitReached && !hasUnlimitedMessages) {
+      if (isMessageLimitReached && !hasUnlimitedMessages) {
         toast.error(
           "You've reached the free message limit. Please upgrade to continue.",
         );
@@ -144,7 +157,7 @@ function PureMultimodalInput({
     width,
     chatId,
     inputDisabled,
-    isLimitReached,
+    isMessageLimitReached,
     hasUnlimitedMessages,
   ]);
 
@@ -206,7 +219,11 @@ function PureMultimodalInput({
       {messages.length === 0 &&
         attachments.length === 0 &&
         uploadQueue.length === 0 && (
-          <SuggestedActions append={append} chatId={chatId} />
+          <SuggestedActions
+            append={append}
+            chatId={chatId}
+            disabled={isChatLimitReached}
+          />
         )}
 
       <input
@@ -243,20 +260,41 @@ function PureMultimodalInput({
       )}
 
       <div className="relative">
-        {isLimitReached && !hasUnlimitedMessages && (
-          <div className="absolute inset-0 flex items-center justify-center bg-background/95 z-10 rounded-2xl border border-red-200 dark:border-red-800">
-            <div className="flex items-center justify-between w-full px-6 py-4">
+        {isMessageLimitReached && !hasUnlimitedMessages && (
+          <div className="absolute inset-0 flex items-center justify-center bg-background/95 z-10 rounded-2xl border border-muted-foreground/20 dark:border-muted-foreground/30 shadow-sm">
+            <div className="flex items-center justify-between w-full px-4 sm:px-6 py-3 sm:py-4">
               <div className="flex-1">
-                <h3 className="text-lg font-semibold mb-1">
+                <h3 className="text-base sm:text-lg font-semibold mb-0.5 sm:mb-1">
                   Message Limit Reached
                 </h3>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   You've reached the free message limit. Upgrade to a paid plan
                   for unlimited messages.
                 </p>
               </div>
-              <div className="ml-4">
-                <Button asChild>
+              <div className="ml-3 sm:ml-4">
+                <Button size="sm" asChild>
+                  <a href="/plans">View Plans</a>
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {isNewChat && isChatLimitReached && (
+          <div className="absolute inset-0 flex items-center justify-center bg-background/95 z-10 rounded-2xl border border-muted-foreground/20 dark:border-muted-foreground/30 shadow-sm">
+            <div className="flex items-center justify-between w-full px-4 sm:px-6 py-3 sm:py-4">
+              <div className="flex-1">
+                <h3 className="text-base sm:text-lg font-semibold mb-0.5 sm:mb-1">
+                  Chat Limit Reached
+                </h3>
+                <p className="text-xs sm:text-sm text-muted-foreground">
+                  You've reached the limit of {chatHistoryLimit} chats. Delete
+                  some existing chats or upgrade to a plan with more storage.
+                </p>
+              </div>
+              <div className="ml-3 sm:ml-4">
+                <Button size="sm" asChild>
                   <a href="/plans">View Plans</a>
                 </Button>
               </div>
@@ -290,7 +328,7 @@ function PureMultimodalInput({
                 toast.error(
                   'Please wait for the model to finish its response!',
                 );
-              } else if (isLimitReached && !hasUnlimitedMessages) {
+              } else if (isMessageLimitReached && !hasUnlimitedMessages) {
                 toast.error(
                   "You've reached the free message limit. Please upgrade to continue.",
                 );

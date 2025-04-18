@@ -17,6 +17,8 @@ import {
   LockIcon,
 } from './icons';
 import { useChatVisibility } from '@/hooks/use-chat-visibility';
+import { useFeatureAccess } from '@/hooks/use-subscription';
+import { AlertCircle } from 'lucide-react';
 
 export type VisibilityType = 'private' | 'public';
 
@@ -25,6 +27,7 @@ const visibilities: Array<{
   label: string;
   description: string;
   icon: ReactNode;
+  requiresFeature?: string;
 }> = [
   {
     id: 'private',
@@ -37,6 +40,7 @@ const visibilities: Array<{
     label: 'Public',
     description: 'Anyone with the link can access this chat',
     icon: <GlobeIcon />,
+    requiresFeature: 'public-chats',
   },
 ];
 
@@ -49,6 +53,7 @@ export function VisibilitySelector({
   selectedVisibilityType: VisibilityType;
 } & React.ComponentProps<typeof Button>) {
   const [open, setOpen] = useState(false);
+  const { hasAccess: canSharePublicly } = useFeatureAccess('public-chats');
 
   const { visibilityType, setVisibilityType } = useChatVisibility({
     chatId,
@@ -80,29 +85,47 @@ export function VisibilitySelector({
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="start" className="min-w-[300px]">
-        {visibilities.map((visibility) => (
-          <DropdownMenuItem
-            key={visibility.id}
-            onSelect={() => {
-              setVisibilityType(visibility.id);
-              setOpen(false);
-            }}
-            className="gap-4 group/item flex flex-row justify-between items-center"
-            data-active={visibility.id === visibilityType}
-          >
-            <div className="flex flex-col gap-1 items-start">
-              {visibility.label}
-              {visibility.description && (
-                <div className="text-xs text-muted-foreground">
-                  {visibility.description}
+        {visibilities.map((visibility) => {
+          const isDisabled = visibility.requiresFeature && !canSharePublicly;
+
+          return (
+            <div key={visibility.id}>
+              <DropdownMenuItem
+                onSelect={() => {
+                  if (!isDisabled) {
+                    setVisibilityType(visibility.id);
+                    setOpen(false);
+                  }
+                }}
+                className={cn(
+                  'gap-4 group/item flex flex-row justify-between items-center',
+                  isDisabled && 'opacity-50 cursor-not-allowed',
+                )}
+                data-active={visibility.id === visibilityType}
+                disabled={isDisabled}
+              >
+                <div className="flex flex-col gap-1 items-start">
+                  {visibility.label}
+                  {visibility.description && (
+                    <div className="text-xs text-muted-foreground">
+                      {visibility.description}
+                    </div>
+                  )}
+                </div>
+                <div className="text-foreground dark:text-foreground opacity-0 group-data-[active=true]/item:opacity-100">
+                  <CheckCircleFillIcon />
+                </div>
+              </DropdownMenuItem>
+
+              {isDisabled && visibility.id === 'public' && (
+                <div className="px-2 py-1.5 text-xs text-amber-500 flex items-center gap-1.5 border-t border-border/50 mt-1 pt-2">
+                  <AlertCircle size={14} />
+                  <span>Requires Standard or Priority plan</span>
                 </div>
               )}
             </div>
-            <div className="text-foreground dark:text-foreground opacity-0 group-data-[active=true]/item:opacity-100">
-              <CheckCircleFillIcon />
-            </div>
-          </DropdownMenuItem>
-        ))}
+          );
+        })}
       </DropdownMenuContent>
     </DropdownMenu>
   );

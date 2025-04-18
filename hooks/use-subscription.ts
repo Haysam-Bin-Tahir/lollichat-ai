@@ -91,6 +91,8 @@ export function useFeatureAccess(featureName: string): {
     'file-upload': ['pro', 'business'],
     'priority-support': ['business'],
     'team-collaboration': ['business'],
+    'topics-access': ['standard', 'priority'], // Add topics access feature
+    'public-chats': ['standard', 'priority'], // Add public chats feature
   };
 
   const hasAccess = () => {
@@ -105,6 +107,50 @@ export function useFeatureAccess(featureName: string): {
 
   return {
     hasAccess: hasAccess(),
+    isLoading,
+  };
+}
+
+// Define feature limits
+const featureLimits: Record<string, Record<string, number>> = {
+  'chat-history': {
+    free: 5,
+    standard: 30,
+    priority: Infinity,
+  },
+  topics: {
+    free: 0,
+    standard: 5,
+    priority: Infinity,
+  },
+};
+
+// Add a function to get feature limits
+export function useFeatureLimit(featureName: string): {
+  limit: number;
+  isLoading: boolean;
+} {
+  const { isLoading, plan, isSubscribed } = useSubscription();
+
+  const getLimit = () => {
+    if (!featureLimits[featureName]) {
+      return Infinity; // No limit defined
+    }
+
+    if (!isSubscribed || !plan) {
+      return featureLimits[featureName]['free'] || 0;
+    }
+
+    const planName = plan.name.toLowerCase();
+    return (
+      featureLimits[featureName][planName] ||
+      featureLimits[featureName]['free'] ||
+      0
+    );
+  };
+
+  return {
+    limit: getLimit(),
     isLoading,
   };
 }

@@ -14,6 +14,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { VisibilityType, VisibilitySelector } from './visibility-selector';
 import { TopicsButton } from './topics-button';
 import { VoiceSelector } from '@/components/voice-selector';
+import { useFeatureAccess } from '@/hooks/use-subscription';
 
 function PureChatHeader({
   chatId,
@@ -28,7 +29,7 @@ function PureChatHeader({
 }) {
   const router = useRouter();
   const { open } = useSidebar();
-
+  const { hasAccess: canSharePublicly } = useFeatureAccess('public-chats');
   const { width: windowWidth } = useWindowSize();
 
   return (

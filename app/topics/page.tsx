@@ -7,7 +7,19 @@ import { customRoles } from '@/lib/topics/custom-roles';
 import { cn } from '@/lib/utils';
 import { SparklesIcon as LucideSparkles } from 'lucide-react';
 import { PlusIcon } from 'lucide-react';
-
+import { useFeatureAccess } from '@/hooks/use-subscription';
+import { useState } from 'react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { useRouter } from 'next/navigation';
 // Grid configuration for different sized tiles
 const gridConfig = {
   // Row 1
@@ -37,8 +49,49 @@ const gridConfig = {
 };
 
 export default function TopicsPage() {
+  const router = useRouter();
+  const { hasAccess: hasTopicsAccess } = useFeatureAccess('topics-access');
+  const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
+
+  const handleTopicClick = (topicKey: string) => {
+    if (!hasTopicsAccess) {
+      setShowUpgradeDialog(true);
+      return;
+    }
+
+    router.push(`/?topic=${topicKey}`);
+  };
+
   return (
     <div className="min-h-dvh bg-background p-8">
+      <AlertDialog open={showUpgradeDialog} onOpenChange={setShowUpgradeDialog}>
+        <AlertDialogContent className="sm:max-w-[425px]">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-xl font-semibold">
+              Feature Requires Upgrade
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-muted-foreground">
+              Topics are available on Standard and Priority plans. Upgrade your
+              subscription to access specialized assistants for different
+              domains.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2">
+            <AlertDialogCancel className="mt-2 sm:mt-0">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction asChild>
+              <a
+                href="/plans"
+                className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+              >
+                View Plans
+              </a>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <div className="max-w-7xl mx-auto space-y-8">
         <div className="flex flex-col items-center gap-4 mb-12">
           <LucideSparkles
@@ -89,15 +142,17 @@ export default function TopicsPage() {
                 gridConfig[key as keyof typeof gridConfig],
               )}
             >
-              <Link
-                href={`/?topic=${key}`}
-                className="absolute inset-0 z-10 p-2 sm:p-3 md:p-6 flex flex-col justify-between transition-opacity duration-300"
+              <button
+                // href={`/?topic=${key}`}
+                type="button"
+                onClick={() => handleTopicClick(key)}
+                className="cursor-pointer absolute inset-0 z-10 p-2 sm:p-3 md:p-6 flex flex-col justify-between transition-opacity duration-300"
               >
                 <div className="flex justify-end" />
                 <h2 className="text-base sm:text-lg md:text-2xl lg:text-3xl font-bold winky-sans-bold text-white [text-shadow:_0_2px_10px_rgb(0_0_0_/_80%)]">
                   {role.topic}
                 </h2>
-              </Link>
+              </button>
 
               <div className="absolute inset-0 pointer-events-none">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
