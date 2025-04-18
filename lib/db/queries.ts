@@ -36,35 +36,38 @@ export async function getUser(email: string): Promise<Array<User>> {
 }
 
 export async function createUser(
-  email: string, 
-  password: string | null, 
-  name?: string, 
-  image?: string, 
-  provider: string = 'credentials'
+  email: string,
+  password: string | null,
+  name?: string,
+  image?: string,
+  provider: string = 'credentials',
 ) {
   try {
     console.log(`Creating user with email: ${email}, provider: ${provider}`);
-    
+
     // For standard email/password authentication
     if (provider === 'credentials' && password) {
       const salt = genSaltSync(10);
       const hash = hashSync(password, salt);
-      
-      return await db.insert(user).values({ 
-        email, 
+
+      return await db.insert(user).values({
+        email,
         password: hash,
-        provider 
+        provider,
       });
     }
-    
+
     // For OAuth providers (Google, etc.)
-    const result = await db.insert(user).values({ 
-      email, 
-      name,
-      image,
-      provider 
-    }).returning({ id: user.id });
-    
+    const result = await db
+      .insert(user)
+      .values({
+        email,
+        name,
+        image,
+        provider,
+      })
+      .returning({ id: user.id });
+
     console.log('User created successfully:', result);
     return result;
   } catch (error) {
@@ -384,3 +387,5 @@ export async function updateChatVisiblityById({
     throw error;
   }
 }
+
+export { db };

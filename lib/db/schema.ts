@@ -9,6 +9,7 @@ import {
   primaryKey,
   foreignKey,
   boolean,
+  decimal,
 } from 'drizzle-orm/pg-core';
 
 // export const user = pgTable('User', {
@@ -161,3 +162,64 @@ export const suggestion = pgTable(
 );
 
 export type Suggestion = InferSelectModel<typeof suggestion>;
+
+// Subscription Plan
+export const subscriptionPlan = pgTable('SubscriptionPlan', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: varchar('name', { length: 64 }).notNull(),
+  description: text('description').notNull(),
+  price: decimal('price', { precision: 10, scale: 2 }).notNull(),
+  features: json('features').notNull().$type<string[]>(),
+  createdAt: timestamp('createdAt').defaultNow().notNull(),
+  updatedAt: timestamp('updatedAt').defaultNow().notNull(),
+});
+
+export type SubscriptionPlan = InferSelectModel<typeof subscriptionPlan>;
+
+// User Subscription
+export const userSubscription = pgTable('UserSubscription', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('userId')
+    .notNull()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  planId: uuid('planId')
+    .notNull()
+    .references(() => subscriptionPlan.id),
+  status: varchar('status', { length: 32 }).notNull(), // active, canceled, expired, etc.
+  authorizeNetSubscriptionId: varchar('authorizeNetSubscriptionId', {
+    length: 64,
+  }),
+  authorizeNetCustomerProfileId: varchar('authorizeNetCustomerProfileId', {
+    length: 64,
+  }),
+  authorizeNetPaymentProfileId: varchar('authorizeNetPaymentProfileId', {
+    length: 64,
+  }),
+  startDate: timestamp('startDate').notNull(),
+  endDate: timestamp('endDate'),
+  createdAt: timestamp('createdAt').defaultNow().notNull(),
+  updatedAt: timestamp('updatedAt').defaultNow().notNull(),
+});
+
+export type UserSubscription = InferSelectModel<typeof userSubscription>;
+
+// Payment Transaction
+export const paymentTransaction = pgTable('PaymentTransaction', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('userId')
+    .notNull()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  subscriptionId: uuid('subscriptionId').references(() => userSubscription.id, {
+    onDelete: 'set null',
+  }),
+  amount: decimal('amount', { precision: 10, scale: 2 }).notNull(),
+  currency: varchar('currency', { length: 3 }).default('USD').notNull(),
+  status: varchar('status', { length: 32 }).notNull(), // success, failed, pending, voided
+  authorizeNetTransactionId: varchar('authorizeNetTransactionId', {
+    length: 64,
+  }),
+  createdAt: timestamp('createdAt').defaultNow().notNull(),
+  updatedAt: timestamp('updatedAt').defaultNow().notNull(),
+});
+
+export type PaymentTransaction = InferSelectModel<typeof paymentTransaction>;
