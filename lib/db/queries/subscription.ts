@@ -171,10 +171,13 @@ export async function getPaymentTransactionsForUser(userId: string) {
 // Get a subscription by ID
 export async function getSubscriptionById(id: string) {
   try {
-    const result = await db.query.userSubscription.findFirst({
-      where: eq(userSubscription.id, id),
-    });
-    return result;
+    const result = await db
+      .select()
+      .from(userSubscription)
+      .where(eq(userSubscription.id, id))
+      .limit(1);
+
+    return result[0];
   } catch (error) {
     console.error('Error getting subscription by ID:', error);
     throw error;

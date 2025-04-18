@@ -4,6 +4,7 @@ import {
   getAllSubscriptionPlans,
   getActiveSubscriptionForUser,
   getAllSubscriptionsForUser,
+  getSubscriptionPlanById,
 } from '@/lib/db/queries/subscription';
 
 // GET /api/subscriptions - Get all subscription plans
@@ -22,11 +23,17 @@ export async function GET(request: NextRequest) {
     // Get all subscription plans
     const plans = await getAllSubscriptionPlans();
 
-    // If requested, include user's subscriptions
-    if (includeUserSubscriptions) {
+    // If user is logged in and we need to include user subscriptions
+    if (session?.user?.id && includeUserSubscriptions) {
       const activeSubscription = await getActiveSubscriptionForUser(
         session.user.id,
       );
+
+      let activePlan = null;
+      if (activeSubscription) {
+        activePlan = await getSubscriptionPlanById(activeSubscription.planId);
+      }
+
       const allSubscriptions = await getAllSubscriptionsForUser(
         session.user.id,
       );
@@ -34,13 +41,14 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({
         plans,
         activeSubscription,
+        activePlan,
         allSubscriptions,
       });
     }
 
     return NextResponse.json({ plans });
   } catch (error) {
-    console.error('Error fetching subscriptions:', error);
+    console.error('Error fetching subscription plans:', error);
     return NextResponse.json(
       { error: 'Failed to fetch subscription plans' },
       { status: 500 },

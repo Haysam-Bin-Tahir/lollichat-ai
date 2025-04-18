@@ -59,15 +59,13 @@ export default async function PlansPage() {
       </h1>
 
       {activeSubscription && activePlan && (
-        <div className="mb-12 max-w-md mx-auto">
-          <SubscriptionManagement
-            subscription={activeSubscription}
-            plan={activePlan}
-          />
-        </div>
+        <SubscriptionManagement
+          subscription={activeSubscription}
+          plan={activePlan}
+        />
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {plans.map((plan) => (
           <PlanCard
             key={plan.id}
