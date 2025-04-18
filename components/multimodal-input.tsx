@@ -268,8 +268,8 @@ function PureMultimodalInput({
                   Message Limit Reached
                 </h3>
                 <p className="text-xs sm:text-sm text-muted-foreground">
-                  You've reached the free message limit. Upgrade to a paid plan
-                  for unlimited messages.
+                  You&apos;ve reached the free message limit. Upgrade to a paid
+                  plan for unlimited messages.
                 </p>
               </div>
               <div className="ml-3 sm:ml-4">
@@ -289,8 +289,9 @@ function PureMultimodalInput({
                   Chat Limit Reached
                 </h3>
                 <p className="text-xs sm:text-sm text-muted-foreground">
-                  You've reached the limit of {chatHistoryLimit} chats. Delete
-                  some existing chats or upgrade to a plan with more storage.
+                  You&apos;ve reached the limit of {chatHistoryLimit} chats.
+                  Delete some existing chats or upgrade to a plan with more
+                  storage.
                 </p>
               </div>
               <div className="ml-3 sm:ml-4">
