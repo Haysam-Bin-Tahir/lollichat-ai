@@ -105,4 +105,15 @@ function PureSuggestedActions({
   );
 }
 
-export const SuggestedActions = memo(PureSuggestedActions, () => true);
+// Fix the memo to properly check for changes in the disabled prop
+export const SuggestedActions = memo(
+  PureSuggestedActions,
+  (prevProps, nextProps) => {
+    // Return true if props are equal (no re-render needed)
+    // Return false if props are different (re-render needed)
+    return (
+      prevProps.chatId === nextProps.chatId &&
+      prevProps.disabled === nextProps.disabled
+    );
+  },
+);

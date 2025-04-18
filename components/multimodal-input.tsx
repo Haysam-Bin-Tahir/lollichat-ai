@@ -222,7 +222,7 @@ function PureMultimodalInput({
           <SuggestedActions
             append={append}
             chatId={chatId}
-            disabled={isChatLimitReached}
+            disabled={isNewChat && isChatLimitReached}
           />
         )}
 

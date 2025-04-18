@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils';
 import { VolumeIcon, Volume2Icon, VolumeXIcon } from 'lucide-react';
 import { CheckCircleFillIcon, ChevronDownIcon } from './icons';
 import { useTextToSpeech } from '@/hooks/use-text-to-speech';
+import { AlertCircle } from 'lucide-react';
 
 interface VoiceOption {
   id: string;
@@ -24,7 +25,8 @@ export function VoiceSelector({
   className,
 }: React.ComponentProps<typeof Button>) {
   const [open, setOpen] = useState(false);
-  const { voices, selectedVoice, setSelectedVoice, stop } = useTextToSpeech();
+  const { voices, selectedVoice, setSelectedVoice, stop, hasAccess } =
+    useTextToSpeech();
   const lastVoiceRef = useRef<SpeechSynthesisVoice | null>(null);
 
   // Move filteredVoices outside of voiceOptions memo
@@ -121,45 +123,65 @@ export function VoiceSelector({
         align="end"
         className="min-w-[200px] sm:min-w-[300px] max-h-[300px] overflow-y-auto"
       >
-        {voiceOptions.map((option) => (
-          <DropdownMenuItem
-            key={option.id}
-            onSelect={() => {
-              if (option.id === 'off') {
-                stop();
-                lastVoiceRef.current = selectedVoice;
-                setSelectedVoice(null);
-              } else if (option.id === 'on') {
-                stop();
-                if (lastVoiceRef.current) {
-                  setSelectedVoice(lastVoiceRef.current);
-                }
-              } else {
-                stop();
-                const voice = voices.find((v) => v.name === option.id);
-                if (voice) setSelectedVoice(voice);
-              }
-              setOpen(false);
-            }}
-            className="gap-4 group/item flex flex-row justify-between items-center"
-            data-active={option.id === selectedOption.id}
-          >
-            <div className="flex flex-col gap-1 items-start">
-              <div className="flex items-center gap-2">
-                {option.icon}
-                {option.label}
-              </div>
-              {option.description && (
-                <div className="text-xs text-muted-foreground pl-6">
-                  {option.description}
+        {!hasAccess ? (
+          <>
+            <DropdownMenuItem
+              className="gap-4 group/item flex flex-row justify-between items-center opacity-50 cursor-not-allowed"
+              disabled={true}
+            >
+              <div className="flex flex-col gap-1 items-start">
+                <div className="flex items-center gap-2">
+                  <VolumeXIcon className="h-4 w-4" />
+                  Text-to-Speech Unavailable
                 </div>
-              )}
+              </div>
+            </DropdownMenuItem>
+            <div className="px-2 py-1.5 text-xs text-amber-500 flex items-center gap-1.5 border-t border-border/50 mt-1 pt-2">
+              <AlertCircle size={14} />
+              <span>Requires Priority plan</span>
             </div>
-            <div className="text-foreground dark:text-foreground opacity-0 group-data-[active=true]/item:opacity-100">
-              <CheckCircleFillIcon />
-            </div>
-          </DropdownMenuItem>
-        ))}
+          </>
+        ) : (
+          voiceOptions.map((option) => (
+            <DropdownMenuItem
+              key={option.id}
+              onSelect={() => {
+                if (option.id === 'off') {
+                  stop();
+                  lastVoiceRef.current = selectedVoice;
+                  setSelectedVoice(null);
+                } else if (option.id === 'on') {
+                  stop();
+                  if (lastVoiceRef.current) {
+                    setSelectedVoice(lastVoiceRef.current);
+                  }
+                } else {
+                  stop();
+                  const voice = voices.find((v) => v.name === option.id);
+                  if (voice) setSelectedVoice(voice);
+                }
+                setOpen(false);
+              }}
+              className="gap-4 group/item flex flex-row justify-between items-center"
+              data-active={option.id === selectedOption.id}
+            >
+              <div className="flex flex-col gap-1 items-start">
+                <div className="flex items-center gap-2">
+                  {option.icon}
+                  {option.label}
+                </div>
+                {option.description && (
+                  <div className="text-xs text-muted-foreground pl-6">
+                    {option.description}
+                  </div>
+                )}
+              </div>
+              <div className="text-foreground dark:text-foreground opacity-0 group-data-[active=true]/item:opacity-100">
+                <CheckCircleFillIcon />
+              </div>
+            </DropdownMenuItem>
+          ))
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

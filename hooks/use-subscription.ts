@@ -93,6 +93,7 @@ export function useFeatureAccess(featureName: string): {
     'team-collaboration': ['business'],
     'topics-access': ['standard', 'priority'], // Add topics access feature
     'public-chats': ['standard', 'priority'], // Add public chats feature
+    'text-to-speech': ['priority'], // Add text-to-speech feature - Priority tier only
   };
 
   const hasAccess = () => {

@@ -9,6 +9,7 @@ import {
   useRef,
   ReactNode,
 } from 'react';
+import { useFeatureAccess } from '@/hooks/use-subscription';
 
 interface TextToSpeechOptions {
   pitch?: number; // 0 to 2
@@ -28,6 +29,7 @@ interface TextToSpeechContextType {
   voices: SpeechSynthesisVoice[];
   selectedVoice: SpeechSynthesisVoice | null;
   setSelectedVoice: (voice: SpeechSynthesisVoice | null) => void;
+  hasAccess: boolean;
 }
 
 const TextToSpeechContext = createContext<TextToSpeechContextType | null>(null);
@@ -39,6 +41,7 @@ export function TextToSpeechProvider({ children }: { children: ReactNode }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const lastPlayedRef = useRef<string>('');
   const isStopped = useRef<boolean>(false);
+  const { hasAccess } = useFeatureAccess('text-to-speech');
 
   useEffect(() => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
@@ -47,6 +50,12 @@ export function TextToSpeechProvider({ children }: { children: ReactNode }) {
       const availableVoices = window.speechSynthesis.getVoices();
       setVoices(availableVoices);
       console.log(availableVoices, 'available voices');
+
+      // Only set a default voice if user has access
+      if (!hasAccess) {
+        setSelectedVoice(null);
+        return;
+      }
 
       // Try to find Samantha (en-US) first
       const samantha = availableVoices.find(
@@ -84,11 +93,12 @@ export function TextToSpeechProvider({ children }: { children: ReactNode }) {
 
     updateVoices();
     window.speechSynthesis.onvoiceschanged = updateVoices;
-  }, []);
+  }, [hasAccess]);
 
   const speak = useCallback(
     (text: string, force = false, onEnd?: () => void) => {
       if (
+        !hasAccess ||
         isStopped.current ||
         !selectedVoice ||
         !text ||
@@ -183,7 +193,7 @@ export function TextToSpeechProvider({ children }: { children: ReactNode }) {
         window.speechSynthesis.speak(utterance);
       }
     },
-    [selectedVoice],
+    [selectedVoice, hasAccess],
   );
 
   const stop = useCallback(() => {
@@ -212,6 +222,7 @@ export function TextToSpeechProvider({ children }: { children: ReactNode }) {
     voices,
     selectedVoice,
     setSelectedVoice,
+    hasAccess,
   };
 
   return (
