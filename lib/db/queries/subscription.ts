@@ -124,7 +124,7 @@ export async function createPaymentTransaction({
 }) {
   const id = generateUUID();
 
-  await db.insert(paymentTransaction).values({
+  await (db.insert(paymentTransaction) as any).values({
     id,
     userId,
     subscriptionId,
