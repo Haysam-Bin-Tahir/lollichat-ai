@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import { auth } from '@/app/(auth)/auth';
 import {
   getActiveSubscriptionForUser,
@@ -15,9 +16,11 @@ export async function GET(request: NextRequest) {
     }
 
     const activeSubscription = await getActiveSubscriptionForUser(
-      session.user.id,
+      session.user.id || '',
     );
-    const allSubscriptions = await getAllSubscriptionsForUser(session.user.id);
+    const allSubscriptions = await getAllSubscriptionsForUser(
+      session.user.id || '',
+    );
 
     return NextResponse.json({
       activeSubscription,
