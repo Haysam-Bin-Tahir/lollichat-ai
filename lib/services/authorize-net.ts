@@ -316,84 +316,142 @@ export const createSubscription = async (
   planName: string,
 ): Promise<string> => {
   return new Promise((resolve, reject) => {
-    console.log(
-      'Creating subscription',
+    console.log('=== CREATE SUBSCRIPTION: START ===');
+    console.log('Input parameters:', {
       customerProfileId,
       customerPaymentProfileId,
       amount,
       planName,
-    );
-    const merchantAuthenticationType = getMerchantAuthentication();
-
-    const uniqueId = `${Date.now()}`;
-
-    // Set up subscription
-    const subscription = new APIContracts.ARBSubscriptionType();
-    subscription.setName(`${planName}-${uniqueId}`);
-
-    // Set payment schedule
-    const paymentSchedule = new APIContracts.PaymentScheduleType();
-    const interval = new APIContracts.PaymentScheduleType.Interval();
-    interval.setLength(1); // 1 month
-    interval.setUnit(APIContracts.ARBSubscriptionUnitEnum.MONTHS);
-    paymentSchedule.setInterval(interval);
-
-    // Start date is tomorrow to ensure it's processed at 2am PST
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() + 1);
-    // Format date as YYYY-MM-DD
-    const formattedDate = startDate.toISOString().split('T')[0];
-    paymentSchedule.setStartDate(formattedDate);
-
-    paymentSchedule.setTotalOccurrences(9999); // Ongoing until canceled
-    subscription.setPaymentSchedule(paymentSchedule);
-
-    // Set amount
-    subscription.setAmount(amount);
-
-    // Set profile
-    const profile = new APIContracts.CustomerProfileIdType();
-    profile.setCustomerProfileId(customerProfileId);
-    profile.setCustomerPaymentProfileId(customerPaymentProfileId);
-    subscription.setProfile(profile);
-
-    // Add order information with shorter unique reference ID
-    // Authorize.Net has a 20-character limit for invoice numbers
-    const order = new APIContracts.OrderType();
-    order.setInvoiceNumber(`INV-${uniqueId}`); // Much shorter invoice number
-    order.setDescription(`Sub: ${planName}`); // Shorter description
-    subscription.setOrder(order);
-
-    // Create request
-    const createRequest = new APIContracts.ARBCreateSubscriptionRequest();
-    createRequest.setMerchantAuthentication(merchantAuthenticationType);
-    createRequest.setSubscription(subscription);
-
-    // Execute request
-    const controller = new APIControllers.ARBCreateSubscriptionController(
-      createRequest.getJSON(),
-    );
-
-    controller.execute(() => {
-      const apiResponse = controller.getResponse();
-      const response = new APIContracts.ARBCreateSubscriptionResponse(
-        apiResponse,
-      );
-
-      if (
-        response.getMessages().getResultCode() ===
-        APIContracts.MessageTypeEnum.OK
-      ) {
-        resolve(response.getSubscriptionId());
-      } else {
-        const errorMessages = response.getMessages().getMessage();
-        reject(new Error(errorMessages[0].getText()));
-      }
     });
 
-    controller.setEnvironment(
-      isProduction ? ENDPOINTS.production : ENDPOINTS.sandbox,
-    );
+    const merchantAuthenticationType = getMerchantAuthentication();
+    console.log('Merchant authentication created');
+
+    const uniqueId = `${Date.now()}`;
+    console.log('Generated uniqueId:', uniqueId);
+
+    try {
+      // Set up subscription
+      console.log('Setting up subscription object');
+      const subscription = new APIContracts.ARBSubscriptionType();
+      subscription.setName(planName);
+      console.log('Set subscription name:', planName);
+
+      // Set payment schedule
+      console.log('Setting up payment schedule');
+      const paymentSchedule = new APIContracts.PaymentScheduleType();
+      const interval = new APIContracts.PaymentScheduleType.Interval();
+      interval.setLength(1); // 1 month
+      interval.setUnit(APIContracts.ARBSubscriptionUnitEnum.MONTHS);
+      paymentSchedule.setInterval(interval);
+      console.log('Set payment interval: 1 month');
+
+      // Start date is tomorrow to ensure it's processed at 2am PST
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() + 1);
+      // Format date as YYYY-MM-DD
+      const formattedDate = startDate.toISOString().split('T')[0];
+      paymentSchedule.setStartDate(formattedDate);
+      console.log('Set start date:', formattedDate);
+
+      paymentSchedule.setTotalOccurrences(9999); // Ongoing until canceled
+      console.log('Set total occurrences: 9999');
+      subscription.setPaymentSchedule(paymentSchedule);
+      console.log('Payment schedule configured');
+
+      // Set amount
+      subscription.setAmount(amount);
+      console.log('Set subscription amount:', amount);
+
+      // Set profile
+      console.log('Setting up customer profile');
+      const profile = new APIContracts.CustomerProfileIdType();
+      profile.setCustomerProfileId(customerProfileId);
+      profile.setCustomerPaymentProfileId(customerPaymentProfileId);
+      subscription.setProfile(profile);
+      console.log('Customer profile configured:', {
+        customerProfileId,
+        customerPaymentProfileId,
+      });
+
+      // Add order information with unique reference ID
+      console.log('Setting up order information');
+      const order = new APIContracts.OrderType();
+
+      // Use a shorter invoice number (max 20 chars)
+      const shortInvoiceId = uniqueId.substring(0, 15); // Leave room for "INV-" prefix
+      const invoiceNumber = `INV-${shortInvoiceId}`;
+      order.setInvoiceNumber(invoiceNumber);
+      console.log(
+        'Set invoice number:',
+        invoiceNumber,
+        '(length:',
+        invoiceNumber.length,
+        ')',
+      );
+
+      order.setDescription(`Sub: ${planName}`);
+      console.log('Set order description:', `Sub: ${planName}`);
+      subscription.setOrder(order);
+      console.log('Order information configured');
+
+      // Create request
+      console.log('Creating ARBCreateSubscriptionRequest');
+      const createRequest = new APIContracts.ARBCreateSubscriptionRequest();
+      createRequest.setMerchantAuthentication(merchantAuthenticationType);
+      createRequest.setSubscription(subscription);
+      console.log('Request configured');
+
+      // Execute request
+      console.log('Creating controller for request execution');
+      const controller = new APIControllers.ARBCreateSubscriptionController(
+        createRequest.getJSON(),
+      );
+
+      console.log('Setting up controller callback');
+      controller.execute(() => {
+        console.log('Controller execution completed');
+        const apiResponse = controller.getResponse();
+        console.log('Raw API response received:', apiResponse);
+
+        const response = new APIContracts.ARBCreateSubscriptionResponse(
+          apiResponse,
+        );
+        console.log('Parsed API response');
+
+        if (
+          response.getMessages().getResultCode() ===
+          APIContracts.MessageTypeEnum.OK
+        ) {
+          const subscriptionId = response.getSubscriptionId();
+          console.log('Subscription created successfully, ID:', subscriptionId);
+          console.log('=== CREATE SUBSCRIPTION: SUCCESS ===');
+          resolve(subscriptionId);
+        } else {
+          const errorMessages = response.getMessages().getMessage();
+          const errorDetails = errorMessages.map((msg) => ({
+            code: msg.getCode(),
+            text: msg.getText(),
+          }));
+          console.error('Subscription creation failed:', errorDetails);
+          console.log('=== CREATE SUBSCRIPTION: FAILED ===');
+          reject(new Error(errorMessages[0].getText()));
+        }
+      });
+
+      console.log('Setting environment for controller');
+      controller.setEnvironment(
+        isProduction ? ENDPOINTS.production : ENDPOINTS.sandbox,
+      );
+      console.log(
+        'Controller environment set to:',
+        isProduction ? 'production' : 'sandbox',
+      );
+      console.log('Request sent, waiting for response...');
+    } catch (error) {
+      console.error('=== CREATE SUBSCRIPTION: EXCEPTION ===', error);
+      reject(error);
+    }
   });
 };
 
