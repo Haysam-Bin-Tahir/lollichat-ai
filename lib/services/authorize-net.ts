@@ -1,7 +1,6 @@
 import { APIContracts, APIControllers } from 'authorizenet';
 
 // Environment setup
-const isProduction = process.env.NODE_ENV === 'production';
 const apiLoginKey = process.env.AUTHORIZE_NET_API_LOGIN_ID || '';
 const transactionKey = process.env.AUTHORIZE_NET_TRANSACTION_KEY || '';
 
@@ -136,10 +135,6 @@ export const createCustomerProfile = async (
         }
       }
     });
-
-    controller.setEnvironment(
-      isProduction ? ENDPOINTS.production : ENDPOINTS.sandbox,
-    );
   });
 };
 
@@ -190,10 +185,6 @@ const createPaymentProfileForExistingCustomer = async (
         createNewPaymentProfile();
       }
     });
-
-    getController.setEnvironment(
-      isProduction ? ENDPOINTS.production : ENDPOINTS.sandbox,
-    );
 
     // Function to create a new payment profile
     function createNewPaymentProfile() {
@@ -256,10 +247,6 @@ const createPaymentProfileForExistingCustomer = async (
           }
         }
       });
-
-      controller.setEnvironment(
-        isProduction ? ENDPOINTS.production : ENDPOINTS.sandbox,
-      );
     }
 
     // Function to get existing payment profiles as fallback
@@ -300,10 +287,6 @@ const createPaymentProfileForExistingCustomer = async (
           );
         }
       });
-
-      getController.setEnvironment(
-        isProduction ? ENDPOINTS.production : ENDPOINTS.sandbox,
-      );
     }
   });
 };
@@ -440,13 +423,6 @@ export const createSubscription = async (
       });
 
       console.log('Setting environment for controller');
-      controller.setEnvironment(
-        isProduction ? ENDPOINTS.production : ENDPOINTS.sandbox,
-      );
-      console.log(
-        'Controller environment set to:',
-        isProduction ? 'production' : 'sandbox',
-      );
       console.log('Request sent, waiting for response...');
     } catch (error) {
       console.error('=== CREATE SUBSCRIPTION: EXCEPTION ===', error);
@@ -516,9 +492,6 @@ export const validatePaymentMethod = async (
     console.log('Transaction controller created');
 
     console.log('Setting environment');
-    controller.setEnvironment(
-      isProduction ? ENDPOINTS.production : ENDPOINTS.sandbox,
-    );
     console.log('Environment set, executing request...');
 
     controller.execute(() => {
@@ -616,10 +589,6 @@ export const voidTransaction = async (
         reject(new Error(errorMessage));
       }
     });
-
-    controller.setEnvironment(
-      isProduction ? ENDPOINTS.production : ENDPOINTS.sandbox,
-    );
   });
 };
 
@@ -656,9 +625,5 @@ export const cancelSubscription = async (
         reject(new Error(errorMessages[0].getText()));
       }
     });
-
-    controller.setEnvironment(
-      isProduction ? ENDPOINTS.production : ENDPOINTS.sandbox,
-    );
   });
 };
