@@ -1,6 +1,7 @@
 'use client';
 
-import { ReactNode, useMemo, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -102,7 +103,7 @@ export function VisibilitySelector({
                   isDisabled && 'opacity-50 cursor-not-allowed',
                 )}
                 data-active={visibility.id === visibilityType}
-                disabled={isDisabled}
+                disabled={isDisabled || false}
               >
                 <div className="flex flex-col gap-1 items-start">
                   {visibility.label}
