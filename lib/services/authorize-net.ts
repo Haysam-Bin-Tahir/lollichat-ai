@@ -429,7 +429,7 @@ export const createSubscription = async (
           resolve(subscriptionId);
         } else {
           const errorMessages = response.getMessages().getMessage();
-          const errorDetails = errorMessages.map((msg) => ({
+          const errorDetails = errorMessages.map((msg: any) => ({
             code: msg.getCode(),
             text: msg.getText(),
           }));
