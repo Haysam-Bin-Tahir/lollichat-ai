@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { SubscriptionPlan, UserSubscription } from '@/lib/db/schema';
+import type { SubscriptionPlan, UserSubscription } from '@/lib/db/schema';
 import { PaymentModal } from './payment-modal';
 import { cn } from '@/lib/utils';
 import { formatCurrency } from '@/lib/utils';
@@ -182,12 +182,15 @@ export function PlanCard({
         <CardContent className="flex-grow">
           <ul className="space-y-3">
             {features.map((feature, index) => (
-              <li key={index} className="flex items-start">
+              <li
+                key={`${feature.feature}-${index}`}
+                className="flex items-start"
+              >
                 {feature.included ? (
                   <Check
                     className={cn(
                       'h-4 w-4 mr-2 mt-0.5',
-                      feature.highlight ? 'text-primary' : 'text-green-500',
+                      feature.included ? 'text-primary' : 'text-green-500',
                     )}
                   />
                 ) : (
@@ -196,7 +199,7 @@ export function PlanCard({
                 <span
                   className={cn(
                     feature.included ? '' : 'text-muted-foreground',
-                    feature.highlight ? 'font-medium text-primary' : '',
+                    feature.included ? 'font-medium text-primary' : '',
                   )}
                 >
                   {feature.feature}
