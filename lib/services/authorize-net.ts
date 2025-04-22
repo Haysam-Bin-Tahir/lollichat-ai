@@ -298,8 +298,64 @@ export const createSubscription = async (
   amount: number,
   planName: string,
 ): Promise<string> => {
+  // Add retry logic with exponential backoff
+  const maxRetries = 3;
+  let retryCount = 0;
+  let lastError: Error | null = null;
+
+  while (retryCount < maxRetries) {
+    try {
+      // If this is a retry, add a delay with exponential backoff
+      if (retryCount > 0) {
+        const delayMs = 2000 * Math.pow(2, retryCount - 1); // 2s, 4s, 8s
+        console.log(
+          `Retry attempt ${retryCount}. Waiting ${delayMs}ms before retry...`,
+        );
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+      }
+
+      return await createSubscriptionAttempt(
+        customerProfileId,
+        customerPaymentProfileId,
+        amount,
+        planName,
+        retryCount,
+      );
+    } catch (error) {
+      lastError = error as Error;
+
+      // Only retry if it's the "record cannot be found" error
+      if (
+        error instanceof Error &&
+        error.message.includes('The record cannot be found') &&
+        retryCount < maxRetries - 1
+      ) {
+        console.log(
+          `Encountered "record cannot be found" error. Will retry (${retryCount + 1}/${maxRetries})`,
+        );
+        retryCount++;
+      } else {
+        // For other errors or if we've exhausted retries, throw the error
+        throw error;
+      }
+    }
+  }
+
+  // This should never be reached due to the throw in the loop,
+  // but TypeScript needs it for type safety
+  throw lastError || new Error('Failed to create subscription after retries');
+};
+
+// The actual subscription creation attempt
+const createSubscriptionAttempt = async (
+  customerProfileId: string,
+  customerPaymentProfileId: string,
+  amount: number,
+  planName: string,
+  attemptNumber: number,
+): Promise<string> => {
   return new Promise((resolve, reject) => {
-    console.log('=== CREATE SUBSCRIPTION: START ===');
+    console.log(`=== CREATE SUBSCRIPTION: ATTEMPT ${attemptNumber + 1} ===`);
     console.log('Input parameters:', {
       customerProfileId,
       customerPaymentProfileId,
@@ -310,15 +366,23 @@ export const createSubscription = async (
     const merchantAuthenticationType = getMerchantAuthentication();
     console.log('Merchant authentication created');
 
-    const uniqueId = `${Date.now()}`;
+    // Generate a unique ID that includes the attempt number to avoid duplicates
+    const uniqueId = `${Date.now()}-${attemptNumber}`;
     console.log('Generated uniqueId:', uniqueId);
 
     try {
       // Set up subscription
       console.log('Setting up subscription object');
       const subscription = new APIContracts.ARBSubscriptionType();
-      subscription.setName(planName);
-      console.log('Set subscription name:', planName);
+
+      // When setting the subscription name, include the attempt number
+      const subscriptionName =
+        attemptNumber > 0
+          ? `${planName}-retry-${attemptNumber}-${uniqueId.substring(0, 8)}`
+          : planName;
+
+      subscription.setName(subscriptionName);
+      console.log('Set subscription name:', subscriptionName);
 
       // Set payment schedule
       console.log('Setting up payment schedule');
@@ -425,7 +489,10 @@ export const createSubscription = async (
       console.log('Setting environment for controller');
       console.log('Request sent, waiting for response...');
     } catch (error) {
-      console.error('=== CREATE SUBSCRIPTION: EXCEPTION ===', error);
+      console.error(
+        `=== CREATE SUBSCRIPTION: EXCEPTION (ATTEMPT ${attemptNumber + 1}) ===`,
+        error,
+      );
       reject(error);
     }
   });
