@@ -404,10 +404,10 @@ const plans: SubscriptionPlan[] = [
                   Get help, explore ideas, or simply enjoy a friendly conversation.
                 </p>
                 <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                  <ShimmerButton onClick={() => router.push('/register')} className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-6 text-lg shadow-lg hover:shadow-xl transition-all rounded-md">
+                  <ShimmerButton onClick={() => router.push('/register')} className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all rounded-md">
                     Start Chatting Now <ArrowRight className="ml-2 h-5 w-5 inline" />
                   </ShimmerButton>
-                  <Button variant="outline" className="border-indigo-600 text-indigo-600 hover:bg-indigo-50 px-8 py-6 text-lg">
+                  <Button variant="outline" className="border-indigo-600 text-indigo-600 hover:bg-indigo-50 px-8 py-7 text-lg">
                     View Demo
                   </Button>
                 </div>
