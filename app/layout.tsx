@@ -4,8 +4,10 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { AuthProvider } from '@/components/auth-provider';
 import './globals.css';
-import { ImagePreloader } from '@/components/image-preloader';
 import { TextToSpeechProvider } from '@/hooks/use-text-to-speech';
+import Link from 'next/link';
+import { SparklesIcon as LucideSparkles } from 'lucide-react';
+import { ClientPathCheck } from '@/components/client-path-check';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://chat.vercel.ai'),
@@ -55,13 +57,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // We'll use a different approach to determine the current path
+  // This will be handled client-side with a ClientPathCheck component
+  
   return (
     <html
       lang="en"
-      // `next-themes` injects an extra classname to the body element to avoid
-      // visual flicker before hydration. Hence the `suppressHydrationWarning`
-      // prop is necessary to avoid the React hydration mismatch warning.
-      // https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
       suppressHydrationWarning
       className={`${geist.variable} ${geistMono.variable}`}
     >
@@ -91,9 +92,32 @@ export default async function RootLayout({
             disableTransitionOnChange
           >
             <TextToSpeechProvider>
-              {/* <ImagePreloader /> */}
+              <ClientPathCheck />
               <Toaster position="top-center" />
               {children}
+              
+              {/* Footer */}
+              <footer className="bg-background border-t border-border py-6">
+                <div className="container mx-auto px-4">
+                  <div className="flex flex-col md:flex-row justify-between items-center">
+                    <div className="flex items-center mb-4 md:mb-0">
+                      <LucideSparkles size={20} className="text-primary" />
+                      <span className="ml-2 font-bold text-foreground">Lollichat</span>
+                    </div>
+                    <div className="flex space-x-6">
+                      <Link href="/terms-of-service" className="text-muted-foreground hover:text-foreground transition-colors">
+                        Terms of Service
+                      </Link>
+                      <Link href="/privacy-policy" className="text-muted-foreground hover:text-foreground transition-colors">
+                        Privacy Policy
+                      </Link>
+                    </div>
+                  </div>
+                  <div className="mt-4 text-center text-muted-foreground text-sm">
+                    &copy; {new Date().getFullYear()} Lollichat. All rights reserved.
+                  </div>
+                </div>
+              </footer>
             </TextToSpeechProvider>
           </ThemeProvider>
         </AuthProvider>

@@ -84,26 +84,28 @@ export function useFeatureAccess(featureName: string): {
 } {
   const { isLoading, plan, isSubscribed } = useSubscription();
 
-  // Define feature access rules
-  const featureAccess: Record<string, string[]> = {
-    'advanced-models': ['pro', 'business'],
-    'unlimited-messages': ['standard', 'priority'], // Only standard and priority tiers
-    'file-upload': ['pro', 'business'],
-    'priority-support': ['business'],
-    'team-collaboration': ['business'],
-    'topics-access': ['standard', 'priority'], // Add topics access feature
-    'public-chats': ['standard', 'priority'], // Add public chats feature
-    'text-to-speech': ['priority'], // Add text-to-speech feature - Priority tier only
-  };
-
   const hasAccess = () => {
-    if (!isSubscribed || !plan) return false;
+    if (isLoading) return false;
 
-    // If the feature doesn't have specific requirements, it's available to all
-    if (!featureAccess[featureName]) return true;
+    // Define which plans have access to which features
+    const featureAccess: Record<string, string[]> = {
+      'advanced-models': ['standard', 'priority', 'enterprise'],
+      'unlimited-messages': ['priority', 'enterprise'],
+      'file-upload': ['priority', 'enterprise'],
+      'priority-support': ['priority', 'enterprise'],
+      'topics-access': ['standard', 'priority', 'enterprise'],
+      'public-chats': ['priority', 'enterprise'],
+      'text-to-speech': ['priority', 'enterprise'],
+      'dedicated-support': ['enterprise'],
+      'team-collaboration': ['enterprise'],
+    };
 
-    // Check if the current plan has access to this feature
-    return featureAccess[featureName].includes(plan.name.toLowerCase());
+    if (!isSubscribed || !plan) {
+      return false;
+    }
+
+    const planName = plan.name.toLowerCase().replace(' yearly', '');
+    return featureAccess[featureName]?.includes(planName) || false;
   };
 
   return {
@@ -117,12 +119,14 @@ const featureLimits: Record<string, Record<string, number>> = {
   'chat-history': {
     free: 5,
     standard: 30,
-    priority: Infinity,
+    priority: 100,
+    enterprise: Infinity,
   },
-  topics: {
+  'topics': {
     free: 0,
     standard: 5,
-    priority: Infinity,
+    priority: 15,
+    enterprise: Infinity,
   },
 };
 
@@ -133,6 +137,7 @@ export function useFeatureLimit(featureName: string): {
 } {
   const { isLoading, plan, isSubscribed } = useSubscription();
 
+
   const getLimit = () => {
     if (!featureLimits[featureName]) {
       return Infinity; // No limit defined
@@ -142,9 +147,9 @@ export function useFeatureLimit(featureName: string): {
       return featureLimits[featureName]['free'] || 0;
     }
 
-    const planName = plan.name.toLowerCase();
+    const basePlanName = plan.name.replace(' Yearly', '').toLowerCase();
     return (
-      featureLimits[featureName][planName] ||
+      featureLimits[featureName][basePlanName] ||
       featureLimits[featureName]['free'] ||
       0
     );

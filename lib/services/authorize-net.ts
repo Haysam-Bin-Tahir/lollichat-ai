@@ -297,6 +297,7 @@ export const createSubscription = async (
   customerPaymentProfileId: string,
   amount: number,
   planName: string,
+  billingCycle: 'monthly' | 'yearly' = 'monthly'
 ): Promise<string> => {
   // Add retry logic with exponential backoff
   const maxRetries = 3;
@@ -320,6 +321,7 @@ export const createSubscription = async (
         amount,
         planName,
         retryCount,
+        billingCycle
       );
     } catch (error) {
       lastError = error as Error;
@@ -353,6 +355,7 @@ const createSubscriptionAttempt = async (
   amount: number,
   planName: string,
   attemptNumber: number,
+  billingCycle: 'monthly' | 'yearly' = 'monthly'
 ): Promise<string> => {
   return new Promise((resolve, reject) => {
     console.log(`=== CREATE SUBSCRIPTION: ATTEMPT ${attemptNumber + 1} ===`);
@@ -361,6 +364,7 @@ const createSubscriptionAttempt = async (
       customerPaymentProfileId,
       amount,
       planName,
+      billingCycle
     });
 
     const merchantAuthenticationType = getMerchantAuthentication();
@@ -388,10 +392,18 @@ const createSubscriptionAttempt = async (
       console.log('Setting up payment schedule');
       const paymentSchedule = new APIContracts.PaymentScheduleType();
       const interval = new APIContracts.PaymentScheduleType.Interval();
-      interval.setLength(1); // 1 month
+      
+      // Set interval based on billing cycle
+      if (billingCycle === 'yearly') {
+        interval.setLength(12); // 12 months
+        console.log('Set payment interval: 12 months (yearly)');
+      } else {
+        interval.setLength(1); // 1 month
+        console.log('Set payment interval: 1 month');
+      }
+      
       interval.setUnit(APIContracts.ARBSubscriptionUnitEnum.MONTHS);
       paymentSchedule.setInterval(interval);
-      console.log('Set payment interval: 1 month');
 
       // Start date is tomorrow to ensure it's processed at 2am PST
       const startDate = new Date();
@@ -437,8 +449,8 @@ const createSubscriptionAttempt = async (
         ')',
       );
 
-      order.setDescription(`Sub: ${planName}`);
-      console.log('Set order description:', `Sub: ${planName}`);
+      order.setDescription(`Sub: ${planName} (${billingCycle})`);
+      console.log('Set order description:', `Sub: ${planName} (${billingCycle})`);
       subscription.setOrder(order);
       console.log('Order information configured');
 

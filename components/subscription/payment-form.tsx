@@ -132,6 +132,13 @@ export function PaymentForm({ plan, onSuccess, onCancel }: PaymentFormProps) {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  const isYearly = plan.name.includes('Yearly');
+  const billingText = isYearly ? 'year' : 'month';
+  const billingCycle = isYearly ? 'yearly' : 'monthly';
+  const billingAmount = `$${Number(plan.price).toFixed(2)}/${billingText}`;
+
+  console.log('Billing Info - Payment Form', {isYearly,billingText,billingCycle,billingAmount})
+
   // Validate form whenever data changes
   useEffect(() => {
     // For card number validation, we need to remove spaces first
@@ -235,6 +242,7 @@ export function PaymentForm({ plan, onSuccess, onCancel }: PaymentFormProps) {
         body: JSON.stringify({
           planId: plan.id,
           paymentInfo: validationData,
+          billingCycle, // Pass the billing cycle parameter
         }),
       });
 
@@ -403,7 +411,7 @@ export function PaymentForm({ plan, onSuccess, onCancel }: PaymentFormProps) {
               Processing...
             </>
           ) : (
-            `Subscribe for $${Number(plan.price).toFixed(2)}/month`
+            `Subscribe for ${billingAmount}`
           )}
         </Button>
       </div>

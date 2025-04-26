@@ -21,6 +21,8 @@ export function useChatLimit() {
   const isLimitReached = chatCount >= chatHistoryLimit;
   const isLoading = isLimitLoading || isHistoryLoading;
 
+  console.log('Subscription Info', {isLoading, chatCount, chatHistoryLimit, isLimitReached});
+
   return {
     chatCount,
     chatHistoryLimit,

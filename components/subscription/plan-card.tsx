@@ -22,6 +22,7 @@ type PlanCardProps = {
   onSubscribe?: () => void;
   isActive?: boolean;
   isBasicPlanActive?: boolean;
+  billingCycle?: 'monthly' | 'yearly';
 };
 
 export function PlanCard({
@@ -30,17 +31,37 @@ export function PlanCard({
   onSubscribe,
   isActive = false,
   isBasicPlanActive = false,
+  billingCycle = 'monthly',
 }: PlanCardProps) {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
   const isActiveSubscription =
     activeSubscription?.planId === plan.id &&
     activeSubscription?.status === 'active';
-  const isPriority = plan.name === 'Priority';
-  const isStandard = plan.name === 'Standard';
+  const isPriority = plan.name.includes('Priority');
+  const isStandard = plan.name.includes('Standard');
+  const isEnterprise = plan.name.includes('Enterprise');
   const isFree = plan.name === 'Basic';
+  const isYearly = plan.name.includes('Yearly');
+
+  // Skip rendering if billing cycle doesn't match
+  if ((isYearly && billingCycle === 'monthly') || (!isYearly && billingCycle === 'yearly')) {
+    return null;
+  }
 
   const markActive = isActive || (isBasicPlanActive && plan.name === 'Basic');
+
+  // Calculate monthly equivalent for yearly plans to show savings
+  const getMonthlyEquivalent = () => {
+    if (!isYearly) return null;
+    
+    return (Number(plan.price) / 12).toFixed(2);
+  };
+
+  const monthlyEquivalent = getMonthlyEquivalent();
+
+  // Determine if plan should show the "MOST POPULAR" badge
+  const showMostPopular = (isPriority && !isYearly) || (isEnterprise && isYearly);
 
   // Define features based on plan type
   const getFeatures = () => {
@@ -111,35 +132,68 @@ export function PlanCard({
       ];
     }
 
-    // Priority plan
-    return [
-      ...baseFeatures,
-      {
-        feature: 'Unlimited saved conversations',
-        included: true,
-      },
-      {
-        feature: 'Unlimited messages per chat',
-        included: true,
-      },
-      {
-        feature: 'Update chat visibility',
-        included: true,
-      },
-      {
-        feature: 'Share chats publicly',
-        included: true,
-      },
-      {
-        feature: 'Access to Topics Library',
-        included: true,
-      },
-      {
-        feature: 'Text-to-Speech capability',
-        included: true,
-        highlight: true,
-      },
-    ];
+    if (isPriority) {
+      return [
+        ...baseFeatures,
+        {
+          feature: '100 saved conversations',
+          included: true,
+        },
+        {
+          feature: 'Unlimited messages per chat',
+          included: true,
+        },
+        {
+          feature: 'Update chat visibility',
+          included: true,
+        },
+        {
+          feature: 'Share chats publicly',
+          included: true,
+        },
+        {
+          feature: 'Access to Topics Library',
+          included: true,
+        },
+        {
+          feature: 'Text-to-Speech capability',
+          included: true,
+          highlight: true,
+        },
+      ];
+    }
+
+    if (isEnterprise) {
+      return [
+        ...baseFeatures,
+        {
+          feature: 'Unlimited saved conversations',
+          included: true,
+        },
+        {
+          feature: 'Unlimited messages per chat',
+          included: true,
+        },
+        {
+          feature: 'Update chat visibility',
+          included: true,
+        },
+        {
+          feature: 'Share chats publicly',
+          included: true,
+        },
+        {
+          feature: 'Access to Topics Library',
+          included: true,
+        },
+        {
+          feature: 'Text-to-Speech capability',
+          included: true,
+        },
+      ];
+    }
+
+    return baseFeatures;
   };
 
   const features = getFeatures();
@@ -157,14 +211,14 @@ export function PlanCard({
             Current Plan
           </div>
         )}
-        <CardHeader className={cn('pb-4', isPriority && 'bg-primary/5')}>
-          {isPriority && (
+        <CardHeader className={cn('pb-4', showMostPopular && 'bg-primary/5')}>
+          {showMostPopular && (
             <div className="flex items-center text-primary mb-2">
               <Sparkles className="h-4 w-4 mr-1" />
               <span className="text-xs font-medium">MOST POPULAR</span>
             </div>
           )}
-          <CardTitle className="text-xl">{plan.name}</CardTitle>
+          <CardTitle className="text-xl">{plan.name.replace(' Yearly', '')}</CardTitle>
           <CardDescription>{plan.description}</CardDescription>
           <div className={plan.name === 'Basic' ? 'mt-4 pt-2' : 'mt-2'}>
             {plan.name !== 'Basic' && (
@@ -175,7 +229,12 @@ export function PlanCard({
             {plan.name === 'Basic' ? (
               <span className="text-muted-foreground ml-1">Free</span>
             ) : (
-              <span className="text-muted-foreground ml-1">/month</span>
+              <span className="text-muted-foreground ml-1">/{isYearly ? 'year' : 'month'}</span>
+            )}
+            {isYearly && monthlyEquivalent && (
+              <div className="mt-1 text-xs text-muted-foreground">
+                ${monthlyEquivalent}/month billed annually
+              </div>
             )}
           </div>
         </CardHeader>
@@ -215,7 +274,7 @@ export function PlanCard({
               className="w-full"
               disabled={markActive}
               variant={
-                isPriority ? 'default' : isStandard ? 'outline' : 'secondary'
+                isPriority || isEnterprise ? 'default' : isStandard ? 'outline' : 'secondary'
               }
             >
               {markActive ? 'Current Plan' : 'Subscribe'}

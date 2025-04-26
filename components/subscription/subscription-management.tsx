@@ -23,8 +23,17 @@ export function SubscriptionManagement({
 }: SubscriptionManagementProps) {
   // Format dates
   const startDate = new Date(subscription.startDate).toLocaleDateString();
+  
+  // Determine if yearly plan
+  const isYearly = plan.name.includes('Yearly');
+  
+  // Adjust next billing date based on billing cycle
   const nextBillingDate = new Date(subscription.startDate);
-  nextBillingDate.setMonth(nextBillingDate.getMonth() + 1);
+  if (isYearly) {
+    nextBillingDate.setFullYear(nextBillingDate.getFullYear() + 1);
+  } else {
+    nextBillingDate.setMonth(nextBillingDate.getMonth() + 1);
+  }
 
   return (
     <Card className="w-full border-primary/20 shadow-md mb-12">
@@ -36,7 +45,8 @@ export function SubscriptionManagement({
               Current Subscription
             </CardTitle>
             <CardDescription className="mt-1">
-              You are currently on the {plan.name} plan
+              You are currently on the {plan.name.replace(' Yearly', '')} plan
+              {isYearly ? ' (Yearly billing)' : ''}
             </CardDescription>
           </div>
           <Badge
@@ -53,10 +63,15 @@ export function SubscriptionManagement({
           <div className="flex items-center p-4 bg-muted/50 rounded-lg">
             <CreditCard className="h-10 w-10 text-primary mr-4" />
             <div>
-              <h3 className="font-medium">{plan.name} Plan</h3>
+              <h3 className="font-medium">{plan.name.replace(' Yearly', '')} Plan</h3>
               <p className="text-sm text-muted-foreground">
-                {formatCurrency(Number(plan.price))}/month
+                {formatCurrency(Number(plan.price))}/{isYearly ? 'year' : 'month'}
               </p>
+              {isYearly && (
+                <p className="text-xs text-muted-foreground">
+                  (${(Number(plan.price) / 12).toFixed(2)}/month equivalent)
+                </p>
+              )}
             </div>
           </div>
 

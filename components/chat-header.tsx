@@ -74,6 +74,14 @@ function PureChatHeader({
       <div className="flex items-center gap-2">
         <VoiceSelector />
       </div>
+      
+      <Button
+        variant="default"
+        className="ml-auto mr-4 md:order-4"
+        onClick={() => router.push('/plans')}
+      >
+        Subscribe
+      </Button>
     </header>
   );
 }

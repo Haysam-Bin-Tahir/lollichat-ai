@@ -22,24 +22,60 @@ export function PaymentModal({
   plan,
   onSuccess,
 }: PaymentModalProps) {
+  const isYearly = plan.name.includes('Yearly');
+  const billingText = isYearly ? 'year' : 'month';
+  
+  // Calculate monthly equivalent for yearly plans
+  const getMonthlyEquivalent = () => {
+    if (!isYearly) return null;
+    
+    return (Number(plan.price) / 12).toFixed(2);
+  };
+  
+  // Calculate savings for yearly plans
+  const getSavings = () => {
+    if (!isYearly) return null;
+    
+    const monthlyPrice = plan.name.includes('Standard') ? 19.99 :
+                         plan.name.includes('Priority') ? 49.99 :
+                         plan.name.includes('Enterprise') ? 99.99 : 0;
+    
+    return (monthlyPrice * 12 - Number(plan.price)).toFixed(2);
+  };
+
+  const monthlyEquivalent = getMonthlyEquivalent();
+  const savings = getSavings();
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Subscribe to {plan.name} Plan</DialogTitle>
+          <DialogTitle>Subscribe to {plan.name.replace(' Yearly', '')}</DialogTitle>
         </DialogHeader>
-        <div className="py-4">
-          <div className="mb-6">
-            <div className="flex justify-between mb-2">
+        <div className="space-y-6">
+          <div className="space-y-2 border-b pb-4">
+            <div className="flex justify-between">
               <span className="text-muted-foreground">Plan</span>
-              <span className="font-medium">{plan.name}</span>
+              <span className="font-medium">{plan.name.replace(' Yearly', '')}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Price</span>
               <span className="font-medium">
-                ${Number(plan.price).toFixed(2)}/month
+                ${Number(plan.price).toFixed(2)}/{billingText}
               </span>
             </div>
+            {isYearly && savings && (
+              <div className="flex justify-between text-sm text-green-600">
+                <span>Savings</span>
+                <span>${savings}</span>
+              </div>
+            )}
+            {isYearly && monthlyEquivalent && (
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>Monthly equivalent</span>
+                <span>${monthlyEquivalent}/month</span>
+              </div>
+            )}
           </div>
           <PaymentForm
             plan={plan}

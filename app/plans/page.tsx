@@ -1,14 +1,14 @@
 import Link from 'next/link';
-import { auth } from '@/app/(auth)/auth';
-import { PlanCard } from '@/components/subscription/plan-card';
-import { SubscriptionManagement } from '@/components/subscription/subscription-management';
-import {
-  getAllSubscriptionPlans,
-  getActiveSubscriptionForUser,
-  getSubscriptionPlanById,
-} from '@/lib/db/queries/subscription';
 import { ArrowLeft } from 'lucide-react';
+import { auth } from '@/app/(auth)/auth';
+import { 
+  getAllSubscriptionPlans, 
+  getActiveSubscriptionForUser,
+  getSubscriptionPlanById 
+} from '@/lib/db/queries/subscription';
+import { PlanSelector } from '@/components/subscription/plan-selector';
 import type { Metadata } from 'next';
+import { SubscriptionManagement } from '@/components/subscription/subscription-management';
 
 export const metadata: Metadata = {
   title: 'Subscription Plans',
@@ -32,17 +32,9 @@ export default async function PlansPage() {
     );
   }
 
-  const [plans, activeSubscription] = await Promise.all([
-    getAllSubscriptionPlans(),
-    userId ? getActiveSubscriptionForUser(userId) : null,
-  ]);
-
-  let activePlan: any;
-  if (activeSubscription) {
-    activePlan = await getSubscriptionPlanById(activeSubscription.planId);
-  }
-
-  console.log(activePlan, 'activePlan');
+  const plans = await getAllSubscriptionPlans();
+  const activeSubscription = userId ? await getActiveSubscriptionForUser(userId) : null;
+  const activePlan = activeSubscription ? await getSubscriptionPlanById(activeSubscription.planId) : null;
 
   return (
     <div className="container max-w-6xl mx-auto px-4 py-8">
@@ -67,21 +59,16 @@ export default async function PlansPage() {
         />
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {plans.map((plan) => (
-          <PlanCard
-            key={plan.id}
-            plan={plan}
-            isActive={activePlan?.id === plan.id}
-            isBasicPlanActive={!activePlan}
-          />
-        ))}
-      </div>
+      <PlanSelector 
+        plans={plans} 
+        activeSubscription={activeSubscription} 
+        activePlan={activePlan} 
+      />
 
       <div className="mt-12 text-center text-sm text-muted-foreground w-full">
         <p>
           All plans include a secure payment process. Your card will be charged
-          monthly until you cancel. Subscriptions can be canceled at any time
+          based on your selected billing cycle until you cancel. Subscriptions can be canceled at any time
           from your account settings.
         </p>
       </div>

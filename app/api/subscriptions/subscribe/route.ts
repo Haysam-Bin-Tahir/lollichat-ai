@@ -29,6 +29,7 @@ const subscriptionSchema = z.object({
     expirationYear: z.string().regex(/^\d{4}$/),
     cardCode: z.string().regex(/^\d{3,4}$/),
   }),
+  billingCycle: z.string().optional(),
 });
 
 // POST /api/subscriptions/subscribe - Subscribe to a plan
@@ -58,7 +59,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { planId, paymentInfo } = body;
+    const { planId, paymentInfo, billingCycle = 'monthly' } = body;
     console.log('Plan ID:', planId);
 
     // Get plan details
@@ -197,6 +198,7 @@ export async function POST(request: NextRequest) {
         customerPaymentProfileId,
         Number(plan.price),
         plan.name,
+        billingCycle,
       );
       console.log('Subscription created:', subscriptionId);
     } catch (error) {

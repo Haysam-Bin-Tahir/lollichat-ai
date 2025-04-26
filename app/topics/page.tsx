@@ -71,7 +71,7 @@ export default function TopicsPage() {
               Feature Requires Upgrade
             </AlertDialogTitle>
             <AlertDialogDescription className="text-muted-foreground">
-              Topics are available on Standard and Priority plans. Upgrade your
+              Topics are not available on Basic plan. Upgrade your
               subscription to access specialized assistants for different
               domains.
             </AlertDialogDescription>
