@@ -276,7 +276,7 @@ export function PlanCard({
               className="w-full"
               disabled={markActive}
               variant={
-                isPriority || isEnterprise ? 'default' : isStandard ? 'outline' : 'secondary'
+                showMostPopular ? 'default'  : 'outline'
               }
             >
               {markActive ? 'Current Plan' : 'Subscribe'}

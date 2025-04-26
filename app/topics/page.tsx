@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { customRoles } from '@/lib/topics/custom-roles';
 import { cn } from '@/lib/utils';
-import { SparklesIcon as LucideSparkles } from 'lucide-react';
+import { SparklesIcon as LucideSparkles, ArrowLeft } from 'lucide-react';
 import { PlusIcon } from 'lucide-react';
 import { useFeatureAccess } from '@/hooks/use-subscription';
 import { useState } from 'react';
@@ -92,7 +92,17 @@ export default function TopicsPage() {
         </AlertDialogContent>
       </AlertDialog>
 
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="container max-w-7xl mx-auto space-y-8">
+        <div className="flex items-center mb-6">
+          <Link
+            href="/"
+            className="flex items-center text-primary hover:text-primary/80"
+          >
+            <ArrowLeft className="h-5 w-5 mr-2" />
+            <span>Back to Home</span>
+          </Link>
+        </div>
+
         <div className="flex flex-col items-center gap-4 mb-12">
           <LucideSparkles
             size={32}
@@ -143,7 +153,6 @@ export default function TopicsPage() {
               )}
             >
               <button
-                // href={`/?topic=${key}`}
                 type="button"
                 onClick={() => handleTopicClick(key)}
                 className="cursor-pointer absolute inset-0 z-10 p-2 sm:p-3 md:p-6 flex flex-col justify-between transition-opacity duration-300"

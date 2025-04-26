@@ -80,7 +80,7 @@ function PureChatHeader({
         className="ml-auto mr-4 md:order-4"
         onClick={() => router.push('/plans')}
       >
-        Subscribe
+        Subscriptions
       </Button>
     </header>
   );

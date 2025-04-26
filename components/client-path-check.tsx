@@ -12,7 +12,7 @@ export function ClientPathCheck() {
   const { data: session } = useSession();
   
   // Only show header and footer on these specific paths
-  const showHeaderAndFooter = ['/topics', '/privacy-policy', '/terms-of-service'].includes(pathname);
+  const showHeaderAndFooter = ['/privacy-policy', '/terms-of-service'].includes(pathname);
   
   // Prevent hydration mismatch
   useEffect(() => {
@@ -27,7 +27,7 @@ export function ClientPathCheck() {
     <>
       <header className="bg-background border-b border-border">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-          <Link href={session ? "/chat" : "/"} className="flex flex-row gap-3 items-center">
+          <Link href={session ? "/landing" : "/"} className="flex flex-row gap-3 items-center">
             <LucideSparkles
               size={24}
               fill="currentColor"

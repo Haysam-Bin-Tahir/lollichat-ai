@@ -7,7 +7,7 @@ const LayoutContext = createContext({ showHeaderAndFooter: false });
 
 export function LayoutProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const showHeaderAndFooter = ['/topics', '/privacy-policy', '/terms-of-service'].includes(pathname);
+  const showHeaderAndFooter = ['/landing', '/privacy-policy', '/terms-of-service'].includes(pathname);
 
   return (
     <LayoutContext.Provider value={{ showHeaderAndFooter }}>
