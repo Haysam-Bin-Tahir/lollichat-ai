@@ -5,9 +5,9 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { AuthProvider } from '@/components/auth-provider';
 import './globals.css';
 import { TextToSpeechProvider } from '@/hooks/use-text-to-speech';
-import Link from 'next/link';
-import { SparklesIcon as LucideSparkles } from 'lucide-react';
 import { ClientPathCheck } from '@/components/client-path-check';
+import { Footer } from '@/components/footer';
+import { LayoutProvider } from '@/components/layout-context';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://chat.vercel.ai'),
@@ -92,32 +92,12 @@ export default async function RootLayout({
             disableTransitionOnChange
           >
             <TextToSpeechProvider>
-              <ClientPathCheck />
-              <Toaster position="top-center" />
-              {children}
-              
-              {/* Footer */}
-              <footer className="bg-background border-t border-border py-6">
-                <div className="container mx-auto px-4">
-                  <div className="flex flex-col md:flex-row justify-between items-center">
-                    <div className="flex items-center mb-4 md:mb-0">
-                      <LucideSparkles size={20} className="text-primary" />
-                      <span className="ml-2 font-bold text-foreground">Lollichat</span>
-                    </div>
-                    <div className="flex space-x-6">
-                      <Link href="/terms-of-service" className="text-muted-foreground hover:text-foreground transition-colors">
-                        Terms of Service
-                      </Link>
-                      <Link href="/privacy-policy" className="text-muted-foreground hover:text-foreground transition-colors">
-                        Privacy Policy
-                      </Link>
-                    </div>
-                  </div>
-                  <div className="mt-4 text-center text-muted-foreground text-sm">
-                    &copy; {new Date().getFullYear()} Lollichat. All rights reserved.
-                  </div>
-                </div>
-              </footer>
+              <LayoutProvider>
+                <ClientPathCheck />
+                <Toaster position="top-center" />
+                {children}
+                <Footer />
+              </LayoutProvider>
             </TextToSpeechProvider>
           </ThemeProvider>
         </AuthProvider>

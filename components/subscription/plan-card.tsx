@@ -23,6 +23,7 @@ type PlanCardProps = {
   isActive?: boolean;
   isBasicPlanActive?: boolean;
   billingCycle?: 'monthly' | 'yearly';
+  hideButton?: boolean;
 };
 
 export function PlanCard({
@@ -32,6 +33,7 @@ export function PlanCard({
   isActive = false,
   isBasicPlanActive = false,
   billingCycle = 'monthly',
+  hideButton = false,
 }: PlanCardProps) {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
@@ -267,7 +269,7 @@ export function PlanCard({
             ))}
           </ul>
         </CardContent>
-        {plan.name !== 'Basic' && (
+        {plan.name !== 'Basic' && !hideButton && (
           <CardFooter className="mt-auto pt-6">
             <Button
               onClick={() => setIsPaymentModalOpen(true)}

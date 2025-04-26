@@ -9,9 +9,10 @@ interface PlanSelectorProps {
   plans: SubscriptionPlan[];
   activeSubscription: UserSubscription | null;
   activePlan: SubscriptionPlan | null;
+  hideButton?: boolean;
 }
 
-export function PlanSelector({ plans, activeSubscription, activePlan }: PlanSelectorProps) {
+export function PlanSelector({ plans, activeSubscription, activePlan, hideButton = false }: PlanSelectorProps) {
   // Determine the default billing cycle based on the active plan
   const getDefaultBillingCycle = () => {
     if (activePlan) {
@@ -65,6 +66,7 @@ export function PlanSelector({ plans, activeSubscription, activePlan }: PlanSele
               isActive={activePlan?.id === plan.id}
               isBasicPlanActive={!activePlan && plan.name === 'Basic'}
               billingCycle={billingCycle}
+              hideButton={hideButton}
             />
           </div>
         ))}

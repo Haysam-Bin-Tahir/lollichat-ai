@@ -4,13 +4,15 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { SparklesIcon as LucideSparkles } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 
 export function ClientPathCheck() {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
+  const { data: session } = useSession();
   
-  // Only show header on these specific paths
-  const showHeader = ['/topics', '/privacy-policy', '/terms-of-service'].includes(pathname);
+  // Only show header and footer on these specific paths
+  const showHeaderAndFooter = ['/topics', '/privacy-policy', '/terms-of-service'].includes(pathname);
   
   // Prevent hydration mismatch
   useEffect(() => {
@@ -19,13 +21,13 @@ export function ClientPathCheck() {
   
   if (!mounted) return null;
   
-  if (!showHeader) return null;
+  if (!showHeaderAndFooter) return null;
   
   return (
     <>
       <header className="bg-background border-b border-border">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-          <Link href="/" className="flex flex-row gap-3 items-center">
+          <Link href={session ? "/chat" : "/"} className="flex flex-row gap-3 items-center">
             <LucideSparkles
               size={24}
               fill="currentColor"
