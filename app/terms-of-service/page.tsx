@@ -216,7 +216,7 @@ const TermsOfService = () => {
           </p>
         </section>
 
-        <section className="mb-8">
+        {/* <section className="mb-8">
           <h2 className="text-xl font-semibold mb-4 text-gray-800">
             14. Contact Information
           </h2>
@@ -227,7 +227,7 @@ const TermsOfService = () => {
             <p className="text-gray-700 mb-1">Email: legal@lollichat.com</p>
             <p className="text-gray-700">Phone: (123) 456-7890</p>
           </div>
-        </section>
+        </section> */}
       </div>
     </main>
   );

@@ -192,7 +192,7 @@ const PrivacyPolicy = () => {
           </p>
         </section>
 
-        <section className="mb-8">
+        {/* <section className="mb-8">
           <h2 className="text-xl font-semibold mb-4 text-gray-800">
             12. Contact Us
           </h2>
@@ -204,7 +204,7 @@ const PrivacyPolicy = () => {
             <p className="text-gray-700 mb-1">Email: privacy@lollichat.com</p>
             <p className="text-gray-700">Phone: (123) 456-7890</p>
           </div>
-        </section>
+        </section> */}
       </div>
     </main>
   );
