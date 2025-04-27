@@ -578,7 +578,7 @@ export default function Home(): JSX.Element {
                   <AnimatedCounter
                     from={0}
                     to={4.9}
-                    formatter={(value) => value.toFixed(1)}
+                    formatter={(value) => Number(value.toFixed(1))}
                   />
                   /5
                 </h3>
