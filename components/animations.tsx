@@ -1,57 +1,70 @@
-
-
 import React, { useState, useEffect, useRef } from 'react';
-import { useInView, useScroll, useTransform } from 'framer-motion'
+import { useInView, useScroll, useTransform } from 'framer-motion';
 import { motion } from 'framer-motion';
 import { animate } from 'framer-motion';
 
-export const GlowingOrb = ({ color = 'indigo', size = 'md', delay = 0, className = '' }) => {
+export const GlowingOrb = ({
+  color = 'indigo',
+  size = 'md',
+  delay = 0,
+  className = '',
+}) => {
   // Size mapping
-  const sizeClass = {
-    sm: 'w-16 h-16',
-    md: 'w-24 h-24',
-    lg: 'w-32 h-32',
-    xl: 'w-48 h-48'
-  }[size] || 'w-24 h-24';
-  
+  const sizeClass =
+    {
+      sm: 'w-16 h-16',
+      md: 'w-24 h-24',
+      lg: 'w-32 h-32',
+      xl: 'w-48 h-48',
+    }[size] || 'w-24 h-24';
+
   // Color mapping
-  const colorClass = {
-    indigo: 'bg-indigo-400',
-    purple: 'bg-purple-400',
-    pink: 'bg-pink-400'
-  }[color] || 'bg-indigo-400';
-  
+  const colorClass =
+    {
+      indigo: 'bg-indigo-400',
+      purple: 'bg-purple-400',
+      pink: 'bg-pink-400',
+    }[color] || 'bg-indigo-400';
+
   return (
-    <motion.div 
+    <motion.div
       className={`${sizeClass} rounded-full ${colorClass} opacity-20 filter blur-3xl absolute ${className}`}
       animate={{
         scale: [1, 1.1, 1],
-        opacity: [0.1, 0.3, 0.1]
+        opacity: [0.1, 0.3, 0.1],
       }}
       transition={{
         duration: 4,
-        ease: "easeInOut",
-        repeat: Infinity,
-        delay
+        ease: 'easeInOut',
+        repeat: Number.POSITIVE_INFINITY,
+        delay,
       }}
     />
   );
 };
 
-
-
-export const FloatingElement = ({ children, delay = 0, duration = 6, className = '' }) => {
+export const FloatingElement = ({
+  children,
+  delay = 0,
+  duration = 6,
+  className = '',
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  duration?: number;
+  className?: string;
+}) => {
   return (
     <motion.div
       className={className}
       animate={{
-        y: [0, -15, 0]
+        y: [0, -15, 0],
       }}
       transition={{
         duration,
-        ease: "easeInOut",
-        repeat: Infinity,
-        delay
+        ease: 'easeInOut',
+        repeat: Number.POSITIVE_INFINITY,
+        delay,
       }}
     >
       {children}
@@ -61,51 +74,71 @@ export const FloatingElement = ({ children, delay = 0, duration = 6, className =
 
 // components/animations/FadeInView.js
 
+export const FadeInView = ({
+  children,
+  delay = 0,
+  direction = 'up',
+  className = '',
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  direction?: 'up' | 'down' | 'left' | 'right' | 'fade';
+  className?: string;
+}) => {
+  const ref = React.useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.1 });
 
-export const FadeInView = ({ children, delay = 0, direction = 'up', className = '' }) => {
-    const ref = React.useRef(null);
-    const isInView = useInView(ref, { once: true, amount: 0.1 });
-    
-    // Map direction to initial properties
-    const directionMap = {
-      up: { y: 20, opacity: 0 },
-      down: { y: -20, opacity: 0 },
-      left: { x: 20, opacity: 0 },
-      right: { x: -20, opacity: 0 },
-      fade: { opacity: 0 }
-    };
-    
-    return (
-      <motion.div
-        ref={ref}
-        initial={directionMap[direction]}
-        animate={isInView ? { opacity: 1, x: 0, y: 0 } : directionMap[direction]}
-        transition={{ duration: 0.5, delay }}
-        className={className}
-      >
-        {children}
-      </motion.div>
-    );
+  // Map direction to initial properties
+  const directionMap = {
+    up: { y: 20, opacity: 0 },
+    down: { y: -20, opacity: 0 },
+    left: { x: 20, opacity: 0 },
+    right: { x: -20, opacity: 0 },
+    fade: { opacity: 0 },
   };
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={directionMap[direction]}
+      animate={isInView ? { opacity: 1, x: 0, y: 0 } : directionMap[direction]}
+      transition={{ duration: 0.5, delay }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+};
 // components/animations/TextGlitch.js
 
-
-export const TextGlitch = ({ text, interval = 70, iterations = 2, className = '' }) => {
+export const TextGlitch = ({
+  text,
+  interval = 70,
+  iterations = 2,
+  className = '',
+}: {
+  text: string;
+  interval?: number;
+  iterations?: number;
+  className?: string;
+}) => {
   const [displayText, setDisplayText] = useState(text);
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  
+  const characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
   useEffect(() => {
-    let timeout;
+    let timeout: NodeJS.Timeout;
     let iteration = 0;
     let position = 0;
-    
-    const randomChar = () => characters.charAt(Math.floor(Math.random() * characters.length));
-    
+
+    const randomChar = () =>
+      characters.charAt(Math.floor(Math.random() * characters.length));
+
     const glitchText = () => {
       if (position < text.length) {
         // Create array from original text
         const textArray = text.split('');
-        
+
         // Replace current position with random character
         if (iteration < iterations) {
           textArray[position] = randomChar();
@@ -125,32 +158,36 @@ export const TextGlitch = ({ text, interval = 70, iterations = 2, className = ''
         setDisplayText(text);
       }
     };
-    
+
     // Start the glitch effect
     timeout = setTimeout(glitchText, interval);
-    
+
     return () => clearTimeout(timeout);
   }, [text, interval, iterations]);
-  
+
   return <span className={className}>{displayText}</span>;
 };
 
-
-
-export const TypewriterEffect = ({ 
-  text, 
-  speed = 50, 
-  delay = 0, 
+export const TypewriterEffect = ({
+  text,
+  speed = 50,
+  delay = 0,
   cursor = true,
-  className = '' 
+  className = '',
+}: {
+  text: string;
+  speed?: number;
+  delay?: number;
+  cursor?: boolean;
+  className?: string;
 }) => {
   const [displayText, setDisplayText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
-  
+
   useEffect(() => {
-    let timeout;
-    
+    let timeout: NodeJS.Timeout;
+
     // Delay before starting
     if (!isTyping && currentIndex === 0) {
       timeout = setTimeout(() => {
@@ -158,7 +195,7 @@ export const TypewriterEffect = ({
       }, delay);
       return () => clearTimeout(timeout);
     }
-    
+
     // Start typing
     if (isTyping && currentIndex < text.length) {
       timeout = setTimeout(() => {
@@ -167,9 +204,8 @@ export const TypewriterEffect = ({
       }, speed);
       return () => clearTimeout(timeout);
     }
-    
   }, [text, speed, delay, currentIndex, isTyping]);
-  
+
   return (
     <span className={className}>
       {displayText}
@@ -180,50 +216,62 @@ export const TypewriterEffect = ({
   );
 };
 
-
-
-export const AnimatedCounter = ({ 
-    from = 0, 
-    to, 
-    duration = 2, 
-    delay = 0,
-    formatter = (value) => Math.round(value),
-    className = '' 
-  }) => {
-    const [count, setCount] = useState(from);
-    const ref = React.useRef(null);
-    const isInView = useInView(ref, { 
-      once: true, 
-      amount: 0.1 
-    });
-    
-    useEffect(() => {
-      if (isInView) {
-        const timeout = setTimeout(() => {
-          const controls = animate(from, to, {
-            duration,
-            onUpdate: (value) => {
-              setCount(formatter(value));
-            }
-          });
-          
-          return () => controls.stop();
-        }, delay * 1000);
-        
-        return () => clearTimeout(timeout);
-      }
-    }, [isInView, from, to, duration, delay, formatter]);
-    
-    return <span ref={ref} className={className}>{count}</span>;
-  };
-
-
-
-export const ShimmerButton = ({ 
-  children, 
-  onClick, 
+export const AnimatedCounter = ({
+  from = 0,
+  to,
+  duration = 2,
+  delay = 0,
+  formatter = (value: number) => Math.round(value),
   className = '',
-  shimmerColor = 'rgba(255, 255, 255, 0.2)' 
+}: {
+  from: number;
+  to: number;
+  duration?: number;
+  delay?: number;
+  formatter?: (value: number) => number;
+  className?: string;
+}) => {
+  const [count, setCount] = useState(from);
+  const ref = React.useRef(null);
+  const isInView = useInView(ref, {
+    once: true,
+    amount: 0.1,
+  });
+
+  useEffect(() => {
+    if (isInView) {
+      const timeout = setTimeout(() => {
+        const controls = animate(from, to, {
+          duration,
+          onUpdate: (value) => {
+            setCount(formatter(value));
+          },
+        });
+
+        return () => controls.stop();
+      }, delay * 1000);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [isInView, from, to, duration, delay, formatter]);
+
+  return (
+    <span ref={ref} className={className}>
+      {count}
+    </span>
+  );
+};
+
+export const ShimmerButton = ({
+  children,
+  onClick,
+  className = '',
+  shimmerColor = 'rgba(255, 255, 255, 0.2)',
+}: {
+  children: React.ReactNode;
+  onClick: () => void;
+  className?: string;
+  shimmerColor?: string;
 }) => {
   return (
     <motion.button
@@ -234,15 +282,17 @@ export const ShimmerButton = ({
     >
       <motion.div
         className="absolute inset-0 w-full h-full"
-        style={{ background: `linear-gradient(90deg, transparent, ${shimmerColor}, transparent)` }}
+        style={{
+          background: `linear-gradient(90deg, transparent, ${shimmerColor}, transparent)`,
+        }}
         variants={{
           hover: {
             x: ['100%', '-100%'],
             transition: {
-              repeat: Infinity,
-              duration: 1.5
-            }
-          }
+              repeat: Number.POSITIVE_INFINITY,
+              duration: 1.5,
+            },
+          },
         }}
       />
       <span className="relative z-10">{children}</span>
@@ -250,27 +300,31 @@ export const ShimmerButton = ({
   );
 };
 
-
-export const ParallaxScroll = ({ 
-  children, 
-  speed = 0.5, 
+export const ParallaxScroll = ({
+  children,
+  speed = 0.5,
   direction = 'up',
-  className = '' 
+  className = '',
+}: {
+  children: React.ReactNode;
+  speed?: number;
+  direction?: 'up' | 'down' | 'left' | 'right';
+  className?: string;
 }) => {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start end", "end start"]
+    offset: ['start end', 'end start'],
   });
-  
+
   // Convert direction to actual transform
   const yRange = direction === 'up' ? [100, -100] : [-100, 100];
-  
+
   // Adjust speed
   const adjustedYRange = [yRange[0] * speed, yRange[1] * speed];
-  
+
   const y = useTransform(scrollYProgress, [0, 1], adjustedYRange);
-  
+
   return (
     <div ref={ref} className={`relative overflow-hidden ${className}`}>
       <motion.div style={{ y }} className="w-full h-full">
