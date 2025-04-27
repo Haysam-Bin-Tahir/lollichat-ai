@@ -708,7 +708,7 @@ export default function Home(): JSX.Element {
                     className="text-center"
                   >
                     <p className="text-xl text-gray-700 italic mb-8">
-                      "{testimonials[currentTestimonial].text}"
+                      &quot;{testimonials[currentTestimonial].text}&quot;
                     </p>
                     <div className="flex flex-col items-center">
                       <div className="bg-indigo-100 rounded-full w-16 h-16 flex items-center justify-center mb-3">
@@ -761,7 +761,7 @@ export default function Home(): JSX.Element {
                       />
                     ))}
                   </div>
-                  <p className="text-gray-700">"{review.text}"</p>
+                  <p className="text-gray-700">&quot;{review.text}&quot;</p>
                 </FadeInView>
               ))}
             </div>
@@ -775,7 +775,7 @@ export default function Home(): JSX.Element {
                 Frequently Asked Questions
               </h2>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Got questions? We've got answers.
+                Got questions? We&apos;ve got answers.
               </p>
             </div>
 
