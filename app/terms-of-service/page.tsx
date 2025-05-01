@@ -15,11 +15,17 @@ const TermsOfService = () => {
             Welcome to Lollichat!
           </h2>
           <p className="text-gray-700 mb-4">
-            These Terms of Service (the "TOS") set forth the legally binding
-            terms for your use of Lollichat and/or any of our online channels,
-            platforms, products or services, including all content contained
-            therein ("Services"). Services include any affiliated website to
-            which you may be redirected from Lollichat.
+            These Terms of Service (&quot;Terms&quot;) govern your access to and
+            use of Lollichat (&quot;we&quot;, &quot;our&quot;, or
+            &quot;us&quot;), a personal AI assistant designed for supportive and
+            empathetic conversations. By accessing or using our services, you
+            agree to be bound by these Terms.
+          </p>
+          <p className="text-gray-700 mb-4">
+            Lollichat is a personal AI assistant that provides advice, guidance,
+            and mental health support through natural language interactions. You
+            can chat and exchange messages with Lollichat, and receive
+            personalized responses based on your input.
           </p>
           <p className="text-gray-700 mb-4">
             The Services are owned and operated by Lollichat Inc., duly
@@ -28,10 +34,10 @@ const TermsOfService = () => {
           </p>
           <p className="text-gray-700 mb-4">
             By accessing and/or using the Services you agree to be bound by
-            these TOS. You understand and agree that your access and/or use of
-            the Services is acceptance of these TOS and of all other policies
+            these Terms. You understand and agree that your access and/or use of
+            the Services is acceptance of these Terms and of all other policies
             published on https://lollichat.com/legal-information and updated
-            from time to time ("Policies"). If you do not agree with these TOS
+            from time to time ("Policies"). If you do not agree with these Terms
             or our Policies, please cease using or accessing our Services.
           </p>
           <p className="text-gray-700 mb-4">
@@ -40,7 +46,7 @@ const TermsOfService = () => {
             commercial, illegal, or unauthorized purpose.
           </p>
           <p className="text-gray-700 mb-4">
-            For purposes of the TOS, "you" and "your" means you as the user of
+            For purposes of the Terms, "you" and "your" means you as the user of
             the Services.
           </p>
           <p className="text-gray-700 mb-4">
@@ -109,7 +115,7 @@ const TermsOfService = () => {
             for commercial purposes or free of charge.
           </p>
           <p className="text-gray-700 mb-4">
-            Any violation of these TOS may cause your user account to fall out
+            Any violation of these Terms may cause your user account to fall out
             of good standing and we may cancel your user account at our sole
             discretion.
           </p>
@@ -117,7 +123,7 @@ const TermsOfService = () => {
             Meanwhile, we reserve the right to terminate or restrict your
             account, or otherwise revoke access to the Services, at any time if
             we, in our sole discretion, have reason to believe or suspect that
-            you have violated the terms of these TOS or other Policies. You
+            you have violated the terms of these Terms or other Policies. You
             agree that we will not be liable to you or any third party for,
             without limitation, any denial of use of the Services, any change of
             costs for third party services, fees, or other obligations arising
@@ -170,7 +176,9 @@ const TermsOfService = () => {
           </h2>
           <p className="text-gray-700 mb-4">You understand and warrant that:</p>
           <ul className="list-disc pl-6 mb-4 text-gray-700">
-            <li>You are entering into these TOS only on behalf of yourself;</li>
+            <li>
+              You are entering into these Terms only on behalf of yourself;
+            </li>
             <li>
               You are of the legal age to form a binding contract with us in the
               jurisdiction where you live and/or access the Services;
@@ -210,7 +218,7 @@ const TermsOfService = () => {
             Lollichat Inc. hereby provides you with a license for personal use
             only. This license does not constitute a transfer of title under any
             circumstances. This license shall automatically terminate if you
-            violate any of the restrictions or these TOS or other Policies and
+            violate any of the restrictions or these Terms or other Policies and
             may be terminated by us at any time.
           </p>
           <p className="text-gray-700 mb-4">
@@ -575,12 +583,12 @@ const TermsOfService = () => {
             14. Governing Law and Dispute Resolution
           </h2>
           <p className="text-gray-700 mb-4">
-            This TOS shall be governed by and construed in accordance with the
+            This Terms shall be governed by and construed in accordance with the
             laws of the United States without giving effect to its conflict of
             law provisions, regardless of your location.
           </p>
           <p className="text-gray-700 mb-4">
-            Any dispute arising out of or in connection with the TOS or other
+            Any dispute arising out of or in connection with the Terms or other
             Policies, including any question regarding their existence, validity
             or termination, shall be referred to and finally resolved by the
             courts of the United States.
@@ -592,7 +600,7 @@ const TermsOfService = () => {
             15. Changes to Terms and Policies
           </h2>
           <p className="text-gray-700 mb-4">
-            We reserve the right to update or make changes to these TOS and/or
+            We reserve the right to update or make changes to these Terms and/or
             any other Policies from time to time in our sole discretion, and we
             may notify you of changes by making the revised version of these
             documents accessible through the Services, which changes will become
@@ -600,7 +608,7 @@ const TermsOfService = () => {
             ensure familiarity with the latest version. You can determine when
             these documents were last revised by referring to the "Date of
             Revision" at the top of this document. If you do not agree with the
-            revised TOS and Policies, you should immediately stop using the
+            revised Terms and Policies, you should immediately stop using the
             Services. Your continued access or use of the Services after any
             changes to these documents have been posted means that you agree and
             consent to such changes.
@@ -609,7 +617,7 @@ const TermsOfService = () => {
             We may change the platform and scope of Services from time to time,
             with or without notice. We may also stop or restrict provision of
             the Services in full or in part toward a certain user, as set out in
-            our TOS and Policies.
+            our Terms and Policies.
           </p>
         </section>
 
@@ -628,15 +636,15 @@ const TermsOfService = () => {
             17. Termination and Assignment
           </h2>
           <p className="text-gray-700 mb-4">
-            These TOS and/or any other Policies will continue in effect until
-            terminated by either you or us. You may terminate these TOS at any
+            These Terms and/or any other Policies will continue in effect until
+            terminated by either you or us. You may terminate these Terms at any
             time by ceasing your access and use of the Services and, as
             applicable, cancelling your paid subscription. If you are a paid
             subscriber, the subsequent processing of fees shall be subject to
             the respective rules of the payment processor (indicated or
-            recognized by us). We may terminate these TOS and your right to
+            recognized by us). We may terminate these Terms and your right to
             access or use the Services, with or without notice to you, for any
-            reason, including actual or suspected breach of these TOS and any
+            reason, including actual or suspected breach of these Terms and any
             other Policies.
           </p>
           <p className="text-gray-700 mb-4">
@@ -652,14 +660,14 @@ const TermsOfService = () => {
             18. Miscellaneous
           </h2>
           <p className="text-gray-700 mb-4">
-            If any provision of these TOS or any other Policies is found to be
+            If any provision of these Terms or any other Policies is found to be
             unlawful, void or for any reason unenforceable, that provision will
             not affect the validity and enforceability of any remaining
             provision and such provision will be enforced to the maximum extent
             possible, so as to affect the intent of the parties.
           </p>
           <p className="text-gray-700 mb-4">
-            These TOS and other Policies constitute your entire agreement with
+            These Terms and other Policies constitute your entire agreement with
             us pertaining to your access and use of the Services. Any prior or
             contemporaneous written or oral agreements pertaining thereto are
             hereby superceded.

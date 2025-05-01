@@ -15,18 +15,20 @@ const PrivacyPolicy = () => {
             Privacy Notice of Lollichat
           </h2>
           <p className="text-gray-700 mb-4">
-            Lollichat ("Lollichat", "we", "us" or "our") is the Controller for
-            the processing implemented through this website accessible at
-            https://lollichat.com/ and/or any affiliated website to which
-            visitors or users may be redirected (the "Services").
+            Lollichat (&quot;Lollichat&quot;, &quot;we&quot;, &quot;us&quot; or
+            &quot;our&quot;) is the Controller for the processing implemented
+            through this website accessible at https://lollichat.com/ and/or any
+            affiliated website to which visitors or users may be redirected (the
+            &quot;Services&quot;).
           </p>
           <p className="text-gray-700 mb-4">
             The Services are an online personal AI assistant designed to provide
             a supportive and empathetic conversational experience. User of the
-            Services ("you") can chat and exchange messages with Lollichat. The
-            Services also include, but are not necessarily limited to, other
-            media such as voice notes. Parts of the Services may require you to
-            create a user account and/or become a paid subscriber.
+            Services (&quot;you&quot;) can chat and exchange messages with
+            Lollichat. The Services also include, but are not necessarily
+            limited to, other media such as voice notes. Parts of the Services
+            may require you to create a user account and/or become a paid
+            subscriber.
           </p>
           <p className="text-gray-700 mb-4">
             This Privacy Notice details how Lollichat collects, uses, discloses
@@ -34,11 +36,12 @@ const PrivacyPolicy = () => {
             your rights under the European Union's General Data Protection
             Regulation 2016/679, and Directive 2002/58/EC concerning the
             Processing of Personal Data and the protection of privacy in the
-            electronic communications sector ("ePrivacy Directive") (together
-            "EU GDPR"), the UK Data Protection Act 2018 and the Privacy and
-            Electronic Communications, Regulations 2003 ("PECR") (together "UK
-            GDPR"), or the Federal Act on Data Protection 235.1 ("FADP"),
-            together referred to as "Applicable Data Protection Law".
+            electronic communications sector (&quot;ePrivacy Directive&quot;)
+            (together &quot;EU GDPR&quot;), the UK Data Protection Act 2018 and
+            the Privacy and Electronic Communications, Regulations 2003
+            (&quot;PECR&quot;) (together &quot;UK GDPR&quot;), or the Federal
+            Act on Data Protection 235.1 (&quot;FADP&quot;), together referred
+            to as &quot;Applicable Data Protection Law&quot;.
           </p>
           <p className="text-gray-700 mb-4">
             By using the Services, you agree that you have read and understood
@@ -56,54 +59,55 @@ const PrivacyPolicy = () => {
           </p>
           <ul className="list-disc pl-6 mb-4 text-gray-700">
             <li>
-              "Content": the information that you provide in order to register
-              as a User and/or in the course of using our Services. Such
-              information includes your Personal Data, inputs in the course of
-              conversations with AI Companions, and outputs in response to the
-              same;
+              &quot;Content&quot;: the information that you provide in order to
+              register as a User and/or in the course of using our Services.
+              Such information includes your Personal Data, inputs in the course
+              of conversations with AI Companions, and outputs in response to
+              the same;
             </li>
             <li>
-              "Consent": any freely given, specific, informed and unambiguous
-              indication of your wishes by which you, by a statement or a clear
-              affirmative action, signifies agreement to the Processing of
-              Personal Data relating to you;
+              &quot;Consent&quot;: any freely given, specific, informed and
+              unambiguous indication of your wishes by which you, by a statement
+              or a clear affirmative action, signifies agreement to the
+              Processing of Personal Data relating to you;
             </li>
             <li>
-              "Controller": the natural or legal person, alone or jointly with
-              others, who determines the purposes and means of the Processing of
-              Personal Data and for the purposes of the Services, Lollichat;
+              &quot;Controller&quot;: the natural or legal person, alone or
+              jointly with others, who determines the purposes and means of the
+              Processing of Personal Data and for the purposes of the Services,
+              Lollichat;
             </li>
             <li>
-              "Performance of our Services": the actions necessary for us to
-              provide our Services;
+              &quot;Performance of our Services&quot;: the actions necessary for
+              us to provide our Services;
             </li>
             <li>
-              "Personal Data": any information relating to an identified or
-              identifiable natural person ("Data Subject"), such as your name,
-              address, marital status, date of birth, gender, office location,
-              position, company name, spoken languages, photos, your account
-              number, your location data;
+              &quot;Personal Data&quot;: any information relating to an
+              identified or identifiable natural person (&quot;Data
+              Subject&quot;), such as your name, address, marital status, date
+              of birth, gender, office location, position, company name, spoken
+              languages, photos, your account number, your location data;
             </li>
             <li>
-              "Processing": any operation or set of operations which is
-              performed on Personal Data or on sets of Personal Data, whether or
-              not by automated means, such as collection, recording,
+              &quot;Processing&quot;: any operation or set of operations which
+              is performed on Personal Data or on sets of Personal Data, whether
+              or not by automated means, such as collection, recording,
               organization, structuring, storage, adaptation or alteration,
               retrieval, consultation, use, disclosure by transmission,
               dissemination or otherwise making available, alignment or
               combination, restriction, erasure or destruction;
             </li>
             <li>
-              "Subscription": an arrangement between Lollichat and you to enable
-              you to benefit from and/or use the Services;
+              &quot;Subscription&quot;: an arrangement between Lollichat and you
+              to enable you to benefit from and/or use the Services;
             </li>
             <li>
-              "User", "you" and "your": collectively a person that has visited
-              or is using the Services;
+              &quot;User&quot;, &quot;you&quot; and &quot;your&quot;:
+              collectively a person that has visited or is using the Services;
             </li>
             <li>
-              "Visitor": anyone who is browsing the Services without a valid
-              Subscription.
+              &quot;Visitor&quot;: anyone who is browsing the Services without a
+              valid Subscription.
             </li>
           </ul>
         </section>
