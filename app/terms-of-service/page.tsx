@@ -37,8 +37,9 @@ const TermsOfService = () => {
             these Terms. You understand and agree that your access and/or use of
             the Services is acceptance of these Terms and of all other policies
             published on https://lollichat.com/legal-information and updated
-            from time to time ("Policies"). If you do not agree with these Terms
-            or our Policies, please cease using or accessing our Services.
+            from time to time (&quot;Policies&quot;). If you do not agree with
+            these Terms or our Policies, please cease using or accessing our
+            Services.
           </p>
           <p className="text-gray-700 mb-4">
             Our Services are intended and made available for personal,
@@ -46,8 +47,8 @@ const TermsOfService = () => {
             commercial, illegal, or unauthorized purpose.
           </p>
           <p className="text-gray-700 mb-4">
-            For purposes of the Terms, "you" and "your" means you as the user of
-            the Services.
+            For purposes of the Terms, &quot;you&quot; and &quot;your&quot;
+            means you as the user of the Services.
           </p>
           <p className="text-gray-700 mb-4">
             All conversations between users and AI Companions on the Services
@@ -73,10 +74,11 @@ const TermsOfService = () => {
           <p className="text-gray-700 mb-4">
             The Services are an online personal AI assistant designed to provide
             a supportive and empathetic conversational experience. User of the
-            Services ("you") can chat and exchange messages with Lollichat. The
-            Services also include, but are not necessarily limited to, other
-            media such as voice notes. Parts of the Services may require you to
-            create a user account and/or become a paid subscriber.
+            Services (&quot;you&quot;) can chat and exchange messages with
+            Lollichat. The Services also include, but are not necessarily
+            limited to, other media such as voice notes. Parts of the Services
+            may require you to create a user account and/or become a paid
+            subscriber.
           </p>
           <p className="text-gray-700 mb-4">
             You can start a conversation with Lollichat and receive personalized
@@ -91,8 +93,9 @@ const TermsOfService = () => {
           <p className="text-gray-700 mb-4">
             Parts of our Services may require you to create a user account with
             an email and password or other available login method (the
-            "Protected Areas"). When registering and/or accessing Protected
-            Areas, you agree to do so only using your login credentials.
+            &quot;Protected Areas&quot;). When registering and/or accessing
+            Protected Areas, you agree to do so only using your login
+            credentials.
           </p>
           <p className="text-gray-700 mb-4">
             By using the Services, you represent and warrant that all
@@ -239,10 +242,10 @@ const TermsOfService = () => {
           <p className="text-gray-700 mb-4">
             You may provide input while using the Services and receive output
             based on your input. Input and output are collectively referred to
-            as "Content." Input is limited to chats and prompts visible to you
-            within your private account. You represent and warrant that you have
-            all rights, licenses, and permissions needed to provide input while
-            using the Services.
+            as &quot;Content.&quot; Input is limited to chats and prompts
+            visible to you within your private account. You represent and
+            warrant that you have all rights, licenses, and permissions needed
+            to provide input while using the Services.
           </p>
           <p className="text-gray-700 mb-4">
             You retain your intellectual property ownership rights over your
@@ -300,7 +303,7 @@ const TermsOfService = () => {
             </li>
             <li>
               You will not use the Services to gain unauthorized access to our
-              or any third party's data, systems or networks;
+              or any third party&apos;s data, systems or networks;
             </li>
             <li>
               You will not use the Services in any manner that could damage,
@@ -461,7 +464,7 @@ const TermsOfService = () => {
             </li>
             <li>
               We cannot refund in cases where there was a technical issue on the
-              user's side.
+              user&apos;s side.
             </li>
             <li>
               We can only refund subscriptions that were purchased via card.
@@ -512,11 +515,12 @@ const TermsOfService = () => {
             12. Liability
           </h2>
           <p className="text-gray-700 mb-4">
-            THE SERVICES ARE PROVIDED TO YOU ON AN "AS-IS" AND "AS AVAILABLE"
-            BASIS AND THE USE THEREOF IS AT YOUR SOLE RISK. WE MAKE NO, AND
-            HEREBY DISCLAIM, ANY REPRESENTATIONS OR WARRANTIES OF ANY KIND,
-            EXPRESS, IMPLIED, STATUTORY OR OTHERWISE, INCLUDING THE WARRANTIES
-            OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, SATISFACTORY
+            THE SERVICES ARE PROVIDED TO YOU ON AN &quot;AS-IS&quot; AND
+            &quot;AS AVAILABLE&quot; BASIS AND THE USE THEREOF IS AT YOUR SOLE
+            RISK. WE MAKE NO, AND HEREBY DISCLAIM, ANY REPRESENTATIONS OR
+            WARRANTIES OF ANY KIND, EXPRESS, IMPLIED, STATUTORY OR OTHERWISE,
+            INCLUDING THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+            PARTICULAR PURPOSE, SATISFACTORY QUALITY, NONINFRINGEMENT, AND
             QUALITY, NONINFRINGEMENT, AND TITLE WITH RESPECT TO THE SERVICES, TO
             THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW.
           </p>
@@ -606,10 +610,10 @@ const TermsOfService = () => {
             documents accessible through the Services, which changes will become
             effective immediately. Please review these documents periodically to
             ensure familiarity with the latest version. You can determine when
-            these documents were last revised by referring to the "Date of
-            Revision" at the top of this document. If you do not agree with the
-            revised Terms and Policies, you should immediately stop using the
-            Services. Your continued access or use of the Services after any
+            these documents were last revised by referring to the &quot;Date of
+            Revision&quot; at the top of this document. If you do not agree with
+            the revised Terms and Policies, you should immediately stop using
+            the Services. Your continued access or use of the Services after any
             changes to these documents have been posted means that you agree and
             consent to such changes.
           </p>
