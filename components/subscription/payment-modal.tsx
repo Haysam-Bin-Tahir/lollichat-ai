@@ -24,22 +24,26 @@ export function PaymentModal({
 }: PaymentModalProps) {
   const isYearly = plan.name.includes('Yearly');
   const billingText = isYearly ? 'year' : 'month';
-  
+
   // Calculate monthly equivalent for yearly plans
   const getMonthlyEquivalent = () => {
     if (!isYearly) return null;
-    
+
     return (Number(plan.price) / 12).toFixed(2);
   };
-  
+
   // Calculate savings for yearly plans
   const getSavings = () => {
     if (!isYearly) return null;
-    
-    const monthlyPrice = plan.name.includes('Standard') ? 19.99 :
-                         plan.name.includes('Priority') ? 49.99 :
-                         plan.name.includes('Enterprise') ? 99.99 : 0;
-    
+
+    const monthlyPrice = plan.name.includes('Standard')
+      ? 19.99
+      : plan.name.includes('Priority')
+        ? 49.99
+        : plan.name.includes('Enterprise')
+          ? 99.99
+          : 0;
+
     return (monthlyPrice * 12 - Number(plan.price)).toFixed(2);
   };
 
@@ -48,15 +52,19 @@ export function PaymentModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] max-h-[100vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Subscribe to {plan.name.replace(' Yearly', '')}</DialogTitle>
+          <DialogTitle>
+            Subscribe to {plan.name.replace(' Yearly', '')}
+          </DialogTitle>
         </DialogHeader>
         <div className="space-y-6">
           <div className="space-y-2 border-b pb-4">
             <div className="flex justify-between">
               <span className="text-muted-foreground">Plan</span>
-              <span className="font-medium">{plan.name.replace(' Yearly', '')}</span>
+              <span className="font-medium">
+                {plan.name.replace(' Yearly', '')}
+              </span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Price</span>
@@ -77,6 +85,7 @@ export function PaymentModal({
               </div>
             )}
           </div>
+
           <PaymentForm
             plan={plan}
             onSuccess={() => {

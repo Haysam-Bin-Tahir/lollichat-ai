@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import type { ChangeEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { z } from 'zod';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2 } from 'lucide-react';
 import type { SubscriptionPlan } from '@/lib/db/schema';
+import { Checkbox } from '@/components/ui/checkbox';
 
 // Custom validation for expiration date
 const expirationDateSchema = z
@@ -90,6 +92,7 @@ type PaymentFormProps = {
   plan: SubscriptionPlan;
   onSuccess?: () => void;
   onCancel?: () => void;
+  disabled?: boolean;
 };
 
 // Format credit card number in chunks of 4
@@ -106,11 +109,17 @@ const formatCreditCardNumber = (value: string): string => {
   return chunks.join(' ');
 };
 
-export function PaymentForm({ plan, onSuccess, onCancel }: PaymentFormProps) {
+export function PaymentForm({
+  plan,
+  onSuccess,
+  onCancel,
+  disabled = false,
+}: PaymentFormProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -137,7 +146,12 @@ export function PaymentForm({ plan, onSuccess, onCancel }: PaymentFormProps) {
   const billingCycle = isYearly ? 'yearly' : 'monthly';
   const billingAmount = `$${Number(plan.price).toFixed(2)}/${billingText}`;
 
-  console.log('Billing Info - Payment Form', {isYearly,billingText,billingCycle,billingAmount})
+  console.log('Billing Info - Payment Form', {
+    isYearly,
+    billingText,
+    billingCycle,
+    billingAmount,
+  });
 
   // Validate form whenever data changes
   useEffect(() => {
@@ -321,7 +335,7 @@ export function PaymentForm({ plan, onSuccess, onCancel }: PaymentFormProps) {
             onChange={handleCardNumberChange}
             onBlur={handleBlur}
             placeholder="4111 1111 1111 1111"
-            maxLength={19} // 16 digits + 3 spaces
+            maxLength={19}
             disabled={isSubmitting}
             className={shouldShowError('cardNumber') ? 'border-red-500' : ''}
           />
@@ -389,18 +403,61 @@ export function PaymentForm({ plan, onSuccess, onCancel }: PaymentFormProps) {
         </div>
       </div>
 
+      <div className="space-y-4 pt-4 border-t">
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="terms"
+            checked={termsAccepted}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setTermsAccepted(e.target.checked)
+            }
+            className="border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
+          />
+          <Label htmlFor="terms" className="text-sm">
+            I agree to the{' '}
+            <Link href="/terms" className="text-primary hover:underline">
+              Terms of Service
+            </Link>{' '}
+            and{' '}
+            <Link href="/privacy" className="text-primary hover:underline">
+              Privacy Policy
+            </Link>
+          </Label>
+        </div>
+
+        <div className="rounded-lg bg-muted p-4 text-sm text-muted-foreground">
+          <p>
+            This is a recurring subscription. By proceeding with your payment,
+            you agree that your payment method will automatically be charged at
+            the price and frequency listed above until you cancel. Payment will
+            occur on the {isYearly ? 'yearly' : 'monthly'} anniversary of your
+            initial subscription date. All cancellations are subject to the{' '}
+            <Link href="/terms" className="text-primary hover:underline">
+              Terms of Service
+            </Link>{' '}
+            and{' '}
+            <Link href="/cancellation" className="text-primary hover:underline">
+              Cancellation Policy
+            </Link>
+            .
+          </p>
+        </div>
+      </div>
+
       <div className="flex justify-between pt-4">
         <Button
           type="button"
           variant="outline"
           onClick={onCancel}
-          disabled={isSubmitting}
+          disabled={isSubmitting || disabled}
         >
           Cancel
         </Button>
         <Button
           type="submit"
-          disabled={isSubmitting || (formSubmitted && !isFormValid)}
+          disabled={
+            isSubmitting || (formSubmitted && !isFormValid) || !termsAccepted
+          }
           className={
             formSubmitted && !isFormValid ? 'opacity-50 cursor-not-allowed' : ''
           }
