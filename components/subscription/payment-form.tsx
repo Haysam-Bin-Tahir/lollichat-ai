@@ -415,11 +415,21 @@ export function PaymentForm({
           />
           <Label htmlFor="terms" className="text-sm">
             I agree to the{' '}
-            <Link href="/terms" className="text-primary hover:underline">
+            <Link
+              href="/terms-of-service"
+              className="text-primary hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Terms of Service
             </Link>{' '}
             and{' '}
-            <Link href="/privacy" className="text-primary hover:underline">
+            <Link
+              href="/privacy-policy"
+              className="text-primary hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Privacy Policy
             </Link>
           </Label>
@@ -432,12 +442,13 @@ export function PaymentForm({
             the price and frequency listed above until you cancel. Payment will
             occur on the {isYearly ? 'yearly' : 'monthly'} anniversary of your
             initial subscription date. All cancellations are subject to the{' '}
-            <Link href="/terms" className="text-primary hover:underline">
+            <Link
+              href="/terms-of-service"
+              className="text-primary hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Terms of Service
-            </Link>{' '}
-            and{' '}
-            <Link href="/cancellation" className="text-primary hover:underline">
-              Cancellation Policy
             </Link>
             .
           </p>
