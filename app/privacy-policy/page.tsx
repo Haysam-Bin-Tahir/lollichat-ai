@@ -33,7 +33,7 @@ const PrivacyPolicy = () => {
           <p className="text-gray-700 mb-4">
             This Privacy Notice details how Lollichat collects, uses, discloses
             and handles your Personal Data for the Services and, as applicable,
-            your rights under the European Union's General Data Protection
+            your rights under the European Union&apos;s General Data Protection
             Regulation 2016/679, and Directive 2002/58/EC concerning the
             Processing of Personal Data and the protection of privacy in the
             electronic communications sector (&quot;ePrivacy Directive&quot;)
@@ -398,8 +398,8 @@ const PrivacyPolicy = () => {
           </p>
           <ol className="list-decimal pl-6 mb-4 text-gray-700">
             <li>
-              Clicking on the 'Unsubscribe' or subscription preferences link in
-              a direct marketing email from us; or
+              Clicking on the &apos;Unsubscribe&apos; or subscription
+              preferences link in a direct marketing email from us; or
             </li>
             <li>
               Contacting us using the contact details provided in Section 11.
